@@ -1,12 +1,7 @@
 package main
 
 import (
-	"bufio"
 	"fmt"
-	"log"
-	"os"
-	"strconv"
-	"strings"
 )
 
 type Lem struct {
@@ -83,6 +78,22 @@ func (g *Graph) swapEdges(v *Vertex) {
 	}
 	g.AddEdgeOneDir(v.key, v.previous.key)
 	v.previous = nil
+}
+
+func (g *Graph) delEdges(v *Vertex) {
+	for i, val := range v.adj {
+		if val == v.previous {
+			v.adj = append(v.adj[:i], v.adj[i+1:]...)
+			break
+		}
+	}
+	for i, val := range v.previous.adj {
+		if val == v {
+			v.previous.adj = append(v.previous.adj[:i], v.previous.adj[i+1:]...)
+			break
+		}
+	}
+	g.AddEdgeOneDir(v.key, v.previous.key)
 }
 
 // func (g *Graph) BFS(from, to *Vertex) {
@@ -165,7 +176,7 @@ func (g *Graph) getpath(finish *Vertex) []*Vertex {
 	}
 	for i := 1; i < len(res); i++ {
 		fmt.Println(res[i].key)
-		g.swapEdges(res[i])
+		g.delEdges(res[i])
 	}
 	return res
 }
@@ -201,58 +212,82 @@ func (g *Graph) contains(key string) bool {
 }
 
 func main() {
-	lem := Lem{}
-	args := os.Args[1:]
-	file, err := os.Open("test/" + args[0])
-	if err != nil {
-		log.Fatalln(err)
+	// lem := Lem{}
+	// args := os.Args[1:]
+	// file, err := os.Open("test/" + args[0])
+	// if err != nil {
+	// 	log.Fatalln(err)
+	// }
+	// defer file.Close()
+	// for scanner := bufio.NewScanner(file); scanner.Scan(); {
+	// 	if scanner.Text() == "##start" {
+	// 		fmt.Println(scanner.Text())
+	// 		scanner.Scan()
+	// 		temp := strings.Split(scanner.Text(), " ")
+	// 		lem.StartRoom = temp[0]
+	// 		fmt.Println(scanner.Text())
+	// 		continue
+	// 	}
+	// 	if scanner.Text() == "##end" {
+	// 		fmt.Println(scanner.Text())
+	// 		scanner.Scan()
+	// 		temp := strings.Split(scanner.Text(), " ")
+	// 		lem.EndRoom = temp[0]
+	// 		fmt.Println(scanner.Text())
+	// 		continue
+	// 	}
+	// 	if strings.Contains(scanner.Text(), "-") {
+	// 		lem.Edges = append(lem.Edges, scanner.Text())
+	// 		fmt.Println(scanner.Text())
+	// 		continue
+	// 	}
+	// 	if len(scanner.Text()) == 1 {
+	// 		temp, _ := strconv.Atoi(scanner.Text())
+	// 		lem.Ants = temp
+	// 		continue
+	// 	}
+	// 	temp := strings.Split(scanner.Text(), " ")
+	// 	lem.Rooms = append(lem.Rooms, temp[0])
+	// 	fmt.Println(scanner.Text())
+	// }
+	// g := Graph{}
+	// g.AddVertex(lem.StartRoom)
+	// g.AddVertex(lem.EndRoom)
+	// for _, v := range lem.Rooms {
+	// 	g.AddVertex(v)
+	// }
+	// for _, v := range lem.Edges {
+	// 	temp := strings.Split(v, "-")
+	// 	g.AddEdge(temp[0], temp[1])
+	// }
+
+	g := &Graph{}
+	for i := 'a'; i <= 'n'; i++ {
+		g.AddVertex(string(i))
 	}
-	defer file.Close()
-	for scanner := bufio.NewScanner(file); scanner.Scan(); {
-		if scanner.Text() == "##start" {
-			fmt.Println(scanner.Text())
-			scanner.Scan()
-			temp := strings.Split(scanner.Text(), " ")
-			lem.StartRoom = temp[0]
-			fmt.Println(scanner.Text())
-			continue
-		}
-		if scanner.Text() == "##end" {
-			fmt.Println(scanner.Text())
-			scanner.Scan()
-			temp := strings.Split(scanner.Text(), " ")
-			lem.EndRoom = temp[0]
-			fmt.Println(scanner.Text())
-			continue
-		}
-		if strings.Contains(scanner.Text(), "-") {
-			lem.Edges = append(lem.Edges, scanner.Text())
-			fmt.Println(scanner.Text())
-			continue
-		}
-		if len(scanner.Text()) == 1 {
-			temp, _ := strconv.Atoi(scanner.Text())
-			lem.Ants = temp
-			continue
-		}
-		temp := strings.Split(scanner.Text(), " ")
-		lem.Rooms = append(lem.Rooms, temp[0])
-		fmt.Println(scanner.Text())
-	}
-	g := Graph{}
-	g.AddVertex(lem.StartRoom)
-	g.AddVertex(lem.EndRoom)
-	for _, v := range lem.Rooms {
-		g.AddVertex(v)
-	}
-	for _, v := range lem.Edges {
-		temp := strings.Split(v, "-")
-		g.AddEdge(temp[0], temp[1])
-	}
+
+	g.AddEdge("b", "a")
+	g.AddEdge("d", "a")
+	g.AddEdge("d", "i")
+	g.AddEdge("j", "i")
+	g.AddEdge("b", "e")
+	g.AddEdge("b", "c")
+	g.AddEdge("f", "c")
+	g.AddEdge("e", "h")
+	g.AddEdge("e", "g")
+	g.AddEdge("h", "l")
+	g.AddEdge("n", "l")
+	g.AddEdge("n", "m")
+	g.AddEdge("g", "f")
+	g.AddEdge("g", "j")
+
+	g.AddEdge("g", "k")
+	g.AddEdge("m", "k")
+	g.AddEdge("j", "m")
 
 	g.PrintGraph()
 
-	g.BFS(g.getVertex("1"), g.getVertex("0"))
-	g.BFS(g.getVertex("1"), g.getVertex("0"))
-	g.BFS(g.getVertex("1"), g.getVertex("0"))
+	g.BFS(g.getVertex("b"), g.getVertex("m"))
+	g.BFS(g.getVertex("b"), g.getVertex("m"))
+	g.BFS(g.getVertex("b"), g.getVertex("m"))
 }
