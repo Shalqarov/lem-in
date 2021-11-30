@@ -21,7 +21,6 @@ type Vertex struct {
 	visited  bool
 	key      string
 	adj      []*Vertex
-	cost     map[*Vertex]int
 	previous *Vertex
 }
 
@@ -123,7 +122,7 @@ func (g *Graph) deleteEdge(from, to string) {
 func (g *Graph) AllPathsBFS(from, to *Vertex) {
 	visited := map[*Vertex]bool{from: true}
 	queue := []*Vertex{from}
-	foundPaths := [][]*Vertex{}
+	foundPaths := []map[*Vertex]int{}
 
 	for len(queue) > 0 {
 		current := queue[0]
@@ -145,16 +144,21 @@ func (g *Graph) AllPathsBFS(from, to *Vertex) {
 		fmt.Println("Paths not found")
 		return
 	}
+	if len(foundPaths) != 1 {
+		for i := 1; i < len(foundPaths)-1; i++ {
+			for j := 2; j < len(foundPaths)-1; j++ {
+				if _,have:= foundPaths[i][foundPaths[j]]
+			}
+		}
+	}
 	for _, v := range foundPaths {
-		printPath(v)
+		printPathMap(v)
 	}
 }
 
 func (g *Graph) BFS(from, to *Vertex) ([]string, bool) {
 	visited := map[*Vertex]bool{from: true}
 	queue := []*Vertex{from}
-	Path := []*Vertex{}
-	crossings := []string{}
 	for len(queue) > 0 {
 		current := queue[0]
 		for _, v := range current.adj {
@@ -172,11 +176,8 @@ func (g *Graph) BFS(from, to *Vertex) ([]string, bool) {
 		}
 		queue = queue[1:]
 	}
-	if len(Path) == 0 {
-		fmt.Println("Paths not found")
-		return nil, false
-	}
-	return crossings, true
+	fmt.Println("All available paths has been found")
+	return nil, false
 }
 
 func printPath(path []*Vertex) {
@@ -190,14 +191,29 @@ func printPath(path []*Vertex) {
 	fmt.Println()
 }
 
-func (g *Graph) getpath(finish *Vertex) []*Vertex {
+func printPathMap(path map[*Vertex]int) {
+	if len(path) == 0 {
+		return
+	}
+	res := []*Vertex{}
+	for vrtx := range path {
+		res = append(res, vrtx)
+	}
+	fmt.Print(res[0].key)
+	for i := 1; i < len(path); i++ {
+		fmt.Printf(" --> %s", res[i].key)
+	}
+	fmt.Println()
+}
+
+func (g *Graph) getpath(finish *Vertex) map[*Vertex]int {
 	reversed := []*Vertex{}
 	for node := finish; node != nil; node = node.previous {
 		reversed = append(reversed, node)
 	}
-	res := make([]*Vertex, len(reversed))
+	res := make(map[*Vertex]int)
 	for i, j := len(reversed)-1, 0; i >= 0; i, j = i-1, j+1 {
-		res[j] = reversed[i]
+		res[reversed[i]] = j
 	}
 	return res
 }
@@ -307,50 +323,34 @@ func main() {
 
 	g := &Graph{}
 	r := &Graph{}
-	for i := 'a'; i <= 'n'; i++ {
+	for i := '1'; i <= '8'; i++ {
 		g.AddVertex(string(i))
 	}
-	for i := 'a'; i <= 'n'; i++ {
+	g.AddVertex("9")
+	r.AddVertex("9")
+	for i := '1'; i <= '8'; i++ {
 		r.AddVertex(string(i))
 	}
 
-	g.AddEdge("b", "a")
-	g.AddEdge("d", "a")
-	g.AddEdge("d", "i")
-	g.AddEdge("j", "i")
-	g.AddEdge("b", "e")
-	g.AddEdge("b", "c")
-	g.AddEdge("f", "c")
-	g.AddEdge("e", "h")
-	g.AddEdge("e", "g")
-	g.AddEdge("h", "l")
-	g.AddEdge("n", "l")
-	g.AddEdge("n", "m")
-	g.AddEdge("g", "f")
-	g.AddEdge("g", "j")
+	g.AddEdge("1", "2")
+	g.AddEdge("1", "3")
+	g.AddEdge("9", "3")
+	g.AddEdge("4", "9")
+	g.AddEdge("2", "4")
+	g.AddEdge("5", "4")
+	g.AddEdge("6", "4")
+	g.AddEdge("6", "7")
+	g.AddEdge("5", "7")
 
-	g.AddEdge("g", "k")
-	g.AddEdge("m", "k")
-	g.AddEdge("j", "m")
-
-	r.AddEdge("b", "a")
-	r.AddEdge("d", "a")
-	r.AddEdge("d", "i")
-	r.AddEdge("j", "i")
-	r.AddEdge("b", "e")
-	r.AddEdge("b", "c")
-	r.AddEdge("f", "c")
-	r.AddEdge("e", "h")
-	r.AddEdge("e", "g")
-	r.AddEdge("h", "l")
-	r.AddEdge("n", "l")
-	r.AddEdge("n", "m")
-	r.AddEdge("g", "f")
-	r.AddEdge("g", "j")
-
-	r.AddEdge("g", "k")
-	r.AddEdge("m", "k")
-	r.AddEdge("j", "m")
+	r.AddEdge("1", "2")
+	r.AddEdge("1", "3")
+	r.AddEdge("9", "3")
+	r.AddEdge("4", "9")
+	r.AddEdge("2", "4")
+	r.AddEdge("5", "4")
+	r.AddEdge("6", "4")
+	r.AddEdge("6", "7")
+	r.AddEdge("5", "7")
 
 	// mainG := g
 	g.PrintGraph()
@@ -358,7 +358,7 @@ func main() {
 	b := true
 	res := []string{}
 	for b {
-		s, b := g.BFS(g.getVertex("b"), g.getVertex("m"))
+		s, b := g.BFS(g.getVertex("1"), g.getVertex("7"))
 		if !b {
 			break
 		}
@@ -366,13 +366,59 @@ func main() {
 			res = append(res, v)
 		}
 	}
-
 	for _, v := range res {
 		r.deleteEdge(string(v[0]), string(v[2]))
 	}
-	r.AllPathsBFS(r.getVertex("b"), r.getVertex("m"))
+	r.AllPathsBFS(r.getVertex("1"), r.getVertex("7"))
 	// fmt.Println(g.BFS(g.getVertex("b"), g.getVertex("m")))
 	// fmt.Println(g.BFS(g.getVertex("b"), g.getVertex("m")))
 	// fmt.Println(g.BFS(g.getVertex("b"), g.getVertex("m")))
 	// fmt.Println(g.BFS(g.getVertex("b"), g.getVertex("m")))
 }
+
+// g := &Graph{}
+// r := &Graph{}
+// for i := 'a'; i <= 'n'; i++ {
+// 	g.AddVertex(string(i))
+// }
+// for i := 'a'; i <= 'n'; i++ {
+// 	r.AddVertex(string(i))
+// }
+
+// g.AddEdge("b", "a")
+// g.AddEdge("d", "a")
+// g.AddEdge("d", "i")
+// g.AddEdge("j", "i")
+// g.AddEdge("b", "e")
+// g.AddEdge("b", "c")
+// g.AddEdge("f", "c")
+// g.AddEdge("e", "h")
+// g.AddEdge("e", "g")
+// g.AddEdge("h", "l")
+// g.AddEdge("n", "l")
+// g.AddEdge("n", "m")
+// g.AddEdge("g", "f")
+// g.AddEdge("g", "j")
+
+// g.AddEdge("g", "k")
+// g.AddEdge("m", "k")
+// g.AddEdge("j", "m")
+
+// r.AddEdge("b", "a")
+// r.AddEdge("d", "a")
+// r.AddEdge("d", "i")
+// r.AddEdge("j", "i")
+// r.AddEdge("b", "e")
+// r.AddEdge("b", "c")
+// r.AddEdge("f", "c")
+// r.AddEdge("e", "h")
+// r.AddEdge("e", "g")
+// r.AddEdge("h", "l")
+// r.AddEdge("n", "l")
+// r.AddEdge("n", "m")
+// r.AddEdge("g", "f")
+// r.AddEdge("g", "j")
+
+// r.AddEdge("g", "k")
+// r.AddEdge("m", "k")
+// r.AddEdge("j", "m")
