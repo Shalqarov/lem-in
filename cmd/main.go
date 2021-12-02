@@ -122,21 +122,40 @@ func (g *Graph) deleteEdge(from, to string) {
 func (g *Graph) AllPathsBFS(from, to *Vertex) {
 	visited := map[*Vertex]bool{from: true}
 	queue := []*Vertex{from}
-	foundPaths := []map[*Vertex]int{}
+	foundPaths := [][]*Vertex{}
+	visitChecking := []map[*Vertex]bool{}
 
 	for len(queue) > 0 {
 		current := queue[0]
-		for _, v := range current.adj {
-			if visited[v] {
+		for _, vertex := range current.adj {
+			check := true
+			if visited[vertex] {
 				continue
 			}
-			visited[v] = true
-			v.previous = current
-			if v == to {
-				foundPaths = append(foundPaths, g.getpath(v))
-				visited[v] = false
+			visited[vertex] = true
+			vertex.previous = current
+			if vertex == to {
+				tempPath, tempMapPath := g.getpath(vertex)
+				if len(visitChecking) == 0 {
+					visitChecking = append(visitChecking, tempMapPath)
+					foundPaths = append(foundPaths, tempPath)
+					visited[vertex] = false
+					continue
+				}
+				for _, v := range visitChecking {
+					if !checker(v, tempMapPath, from, to) {
+						visited[vertex] = false
+						check = false
+						break
+					}
+				}
+				if check {
+					visitChecking = append(visitChecking, tempMapPath)
+					foundPaths = append(foundPaths, tempPath)
+					visited[vertex] = false
+				}
 			}
-			queue = append(queue, v)
+			queue = append(queue, vertex)
 		}
 		queue = queue[1:]
 	}
@@ -144,16 +163,35 @@ func (g *Graph) AllPathsBFS(from, to *Vertex) {
 		fmt.Println("Paths not found")
 		return
 	}
-	if len(foundPaths) != 1 {
-		for i := 1; i < len(foundPaths)-1; i++ {
-			for j := 2; j < len(foundPaths)-1; j++ {
-				if _,have:= foundPaths[i][foundPaths[j]]
-			}
+	for _, v := range foundPaths {
+		printPath(v)
+	}
+}
+
+func checker(path, currentpath map[*Vertex]bool, from, to *Vertex) bool {
+	for vrtx := range currentpath {
+		if vrtx == from || vrtx == to {
+			continue
+		}
+		if _, have := path[vrtx]; have {
+			return false
 		}
 	}
-	for _, v := range foundPaths {
-		printPathMap(v)
+	return true
+}
+
+func (g *Graph) getpath(finish *Vertex) ([]*Vertex, map[*Vertex]bool) {
+	reversed := []*Vertex{}
+	for node := finish; node != nil; node = node.previous {
+		reversed = append(reversed, node)
 	}
+	res := make([]*Vertex, len(reversed))
+	mapResult := make(map[*Vertex]bool)
+	for i, j := len(reversed)-1, 0; i >= 0; i, j = i-1, j+1 {
+		res[j] = reversed[i]
+		mapResult[res[j]] = true
+	}
+	return res, mapResult
 }
 
 func (g *Graph) BFS(from, to *Vertex) ([]string, bool) {
@@ -189,33 +227,6 @@ func printPath(path []*Vertex) {
 		fmt.Printf(" --> %s", path[i].key)
 	}
 	fmt.Println()
-}
-
-func printPathMap(path map[*Vertex]int) {
-	if len(path) == 0 {
-		return
-	}
-	res := []*Vertex{}
-	for vrtx := range path {
-		res = append(res, vrtx)
-	}
-	fmt.Print(res[0].key)
-	for i := 1; i < len(path); i++ {
-		fmt.Printf(" --> %s", res[i].key)
-	}
-	fmt.Println()
-}
-
-func (g *Graph) getpath(finish *Vertex) map[*Vertex]int {
-	reversed := []*Vertex{}
-	for node := finish; node != nil; node = node.previous {
-		reversed = append(reversed, node)
-	}
-	res := make(map[*Vertex]int)
-	for i, j := len(reversed)-1, 0; i >= 0; i, j = i-1, j+1 {
-		res[reversed[i]] = j
-	}
-	return res
 }
 
 func (g *Graph) reversepath(finish *Vertex) ([]*Vertex, []string) {
@@ -355,13 +366,13 @@ func main() {
 	// mainG := g
 	g.PrintGraph()
 
-	b := true
+	// b := true
 	res := []string{}
-	for b {
-		s, b := g.BFS(g.getVertex("1"), g.getVertex("7"))
-		if !b {
-			break
-		}
+	for s, b := g.BFS(g.getVertex("1"), g.getVertex("7")); b; s, b = g.BFS(g.getVertex("1"), g.getVertex("7")) {
+		// s, b := g.BFS(g.getVertex("1"), g.getVertex("7"))
+		// if !b {
+		// 	break
+		// }
 		for _, v := range s {
 			res = append(res, v)
 		}
@@ -370,10 +381,6 @@ func main() {
 		r.deleteEdge(string(v[0]), string(v[2]))
 	}
 	r.AllPathsBFS(r.getVertex("1"), r.getVertex("7"))
-	// fmt.Println(g.BFS(g.getVertex("b"), g.getVertex("m")))
-	// fmt.Println(g.BFS(g.getVertex("b"), g.getVertex("m")))
-	// fmt.Println(g.BFS(g.getVertex("b"), g.getVertex("m")))
-	// fmt.Println(g.BFS(g.getVertex("b"), g.getVertex("m")))
 }
 
 // g := &Graph{}
