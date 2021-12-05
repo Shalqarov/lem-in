@@ -1,6 +1,15 @@
 package main
 
-import path "git.01.alem.school/MangoMango/lem-in/paths"
+import (
+	"bufio"
+	"fmt"
+	"log"
+	"os"
+	"strconv"
+	"strings"
+
+	paths "git.01.alem.school/MangoMango/lem-in/paths"
+)
 
 type Lem struct {
 	StartRoom string
@@ -11,86 +20,82 @@ type Lem struct {
 }
 
 func main() {
-	// lem := Lem{}
-	// args := os.Args[1:]
-	// file, err := os.Open("test/" + args[0])
-	// if err != nil {
-	// 	log.Fatalln(err)
-	// }
-	// defer file.Close()
-	// for scanner := bufio.NewScanner(file); scanner.Scan(); {
-	// 	if scanner.Text() == "##start" {
-	// 		fmt.Println(scanner.Text())
-	// 		scanner.Scan()
-	// 		temp := strings.Split(scanner.Text(), " ")
-	// 		lem.StartRoom = temp[0]
-	// 		fmt.Println(scanner.Text())
-	// 		continue
-	// 	}
-	// 	if scanner.Text() == "##end" {
-	// 		fmt.Println(scanner.Text())
-	// 		scanner.Scan()
-	// 		temp := strings.Split(scanner.Text(), " ")
-	// 		lem.EndRoom = temp[0]
-	// 		fmt.Println(scanner.Text())
-	// 		continue
-	// 	}
-	// 	if strings.Contains(scanner.Text(), "-") {
-	// 		lem.Edges = append(lem.Edges, scanner.Text())
-	// 		fmt.Println(scanner.Text())
-	// 		continue
-	// 	}
-	// 	if len(scanner.Text()) == 1 {
-	// 		temp, _ := strconv.Atoi(scanner.Text())
-	// 		lem.Ants = temp
-	// 		continue
-	// 	}
-	// 	temp := strings.Split(scanner.Text(), " ")
-	// 	lem.Rooms = append(lem.Rooms, temp[0])
-	// 	fmt.Println(scanner.Text())
-	// }
-	// g := Graph{}
-	// g.AddVertex(lem.StartRoom)
-	// g.AddVertex(lem.EndRoom)
-	// for _, v := range lem.Rooms {
-	// 	g.AddVertex(v)
-	// }
-	// for _, v := range lem.Edges {
-	// 	temp := strings.Split(v, "-")
-	// 	g.AddEdge(temp[0], temp[1])
-	// }
+	lem := Lem{}
+	args := os.Args[1:]
 
-	g := &path.Graph{}
-	for i := '1'; i <= '7'; i++ {
-		g.AddVertex(string(i))
+	file, err := os.Open("test/" + args[0])
+	if err != nil {
+		log.Fatalln(err)
+	}
+	defer file.Close()
+
+	for scanner := bufio.NewScanner(file); scanner.Scan(); {
+		if scanner.Text() == "##start" {
+			fmt.Println(scanner.Text())
+			scanner.Scan()
+			temp := strings.Split(scanner.Text(), " ")
+			lem.StartRoom = temp[0]
+			fmt.Println(scanner.Text())
+			continue
+		}
+		if scanner.Text() == "##end" {
+			fmt.Println(scanner.Text())
+			scanner.Scan()
+			temp := strings.Split(scanner.Text(), " ")
+			lem.EndRoom = temp[0]
+			fmt.Println(scanner.Text())
+			continue
+		}
+		if scanner.Text()[:1] == "#" {
+			continue
+		}
+		if strings.Contains(scanner.Text(), "-") {
+			lem.Edges = append(lem.Edges, scanner.Text())
+			fmt.Println(scanner.Text())
+			continue
+		}
+		if len(scanner.Text()) == 1 {
+			temp, _ := strconv.Atoi(scanner.Text())
+			lem.Ants = temp
+			continue
+		}
+		temp := strings.Split(scanner.Text(), " ")
+		lem.Rooms = append(lem.Rooms, temp[0])
+		fmt.Println(scanner.Text())
 	}
 
-	r := &path.Graph{}
-	for i := '1'; i <= '7'; i++ {
-		r.AddVertex(string(i))
+	g := &paths.Graph{}
+	r := &paths.Graph{}
+
+	g.AddVertex(lem.StartRoom)
+	r.AddVertex(lem.StartRoom)
+	g.AddVertex(lem.EndRoom)
+	r.AddVertex(lem.EndRoom)
+
+	for _, v := range lem.Rooms {
+		g.AddVertex(v)
+		r.AddVertex(v)
 	}
 
-	g.AddEdge("1", "2")
-	g.AddEdge("1", "3")
-	g.AddEdge("4", "3")
-	g.AddEdge("4", "2")
-	g.AddEdge("4", "5")
-	g.AddEdge("7", "5")
-	g.AddEdge("4", "6")
-	g.AddEdge("7", "6")
-
-	r.AddEdge("1", "2")
-	r.AddEdge("1", "3")
-	r.AddEdge("4", "3")
-	r.AddEdge("4", "2")
-	r.AddEdge("4", "5")
-	r.AddEdge("7", "5")
-	r.AddEdge("4", "6")
-	r.AddEdge("7", "6")
+	for _, v := range lem.Edges {
+		temp := strings.Split(v, "-")
+		g.AddEdge(temp[0], temp[1])
+		r.AddEdge(temp[0], temp[1])
+	}
 
 	g.PrintGraph()
 
-	g.AllPathsBFS(r, "1", "7")
+	foundPaths := g.AllPathsBFS(r, lem.StartRoom, lem.EndRoom)
+
+	if len(foundPaths) == 0 {
+		fmt.Println("Paths not found")
+	} else {
+		fmt.Println(len(foundPaths))
+		for _, v := range foundPaths {
+			paths.PrintPath(v)
+		}
+	}
+
 }
 
 // g := &path.Graph{}

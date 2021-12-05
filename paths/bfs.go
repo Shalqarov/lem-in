@@ -1,8 +1,11 @@
 package graphs
 
-import "fmt"
+import (
+	"fmt"
+	"strings"
+)
 
-func (g *Graph) AllPathsBFS(copiedGraph *Graph, from, to string) {
+func (g *Graph) AllPathsBFS(copiedGraph *Graph, from, to string) [][]*Vertex {
 
 	fromVertex := g.getVertex(from)
 	toVertex := g.getVertex(to)
@@ -12,8 +15,10 @@ func (g *Graph) AllPathsBFS(copiedGraph *Graph, from, to string) {
 			res = append(res, v)
 		}
 	}
+
 	for _, v := range res {
-		g.deleteEdge(string(v[0]), string(v[2]))
+		temp := strings.Split(v, "-")
+		g.deleteEdge(string(temp[0]), string(temp[1]))
 	}
 
 	visited := map[*Vertex]bool{fromVertex: true}
@@ -32,6 +37,10 @@ func (g *Graph) AllPathsBFS(copiedGraph *Graph, from, to string) {
 			vertex.previous = current
 			if vertex == toVertex {
 				tempPath, tempMapPath := g.getpath(vertex)
+				if len(tempPath) == 2 {
+					foundPaths = append(foundPaths, tempPath)
+					return foundPaths
+				}
 				if len(visitChecking) == 0 {
 					visitChecking = append(visitChecking, tempMapPath)
 					foundPaths = append(foundPaths, tempPath)
@@ -55,13 +64,7 @@ func (g *Graph) AllPathsBFS(copiedGraph *Graph, from, to string) {
 		}
 		queue = queue[1:]
 	}
-	if len(foundPaths) == 0 {
-		fmt.Println("Paths not found")
-		return
-	}
-	for _, v := range foundPaths {
-		printPath(v)
-	}
+	return foundPaths
 }
 
 func crossingsChecking(path, currentpath map[*Vertex]bool, from, to *Vertex) bool {
@@ -104,18 +107,19 @@ func (g *Graph) BFS(from, to *Vertex) ([]string, bool) {
 			v.previous = current
 			if v == to {
 				temp, cross := g.reversepath(v)
-				printPath(temp)
+				PrintPath(temp)
 				return cross, true
 			}
 			queue = append(queue, v)
 		}
+
 		queue = queue[1:]
 	}
 	fmt.Println("All available paths has been found")
 	return nil, false
 }
 
-func printPath(path []*Vertex) {
+func PrintPath(path []*Vertex) {
 	if len(path) == 0 {
 		return
 	}
