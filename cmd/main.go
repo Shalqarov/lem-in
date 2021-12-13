@@ -85,7 +85,7 @@ func main() {
 
 	g.PrintGraph()
 
-	foundPaths := g.AllPathsBFS(r, lem.StartRoom, lem.EndRoom)
+	foundPaths := g.FindAvailablePaths(r, lem.StartRoom, lem.EndRoom)
 
 	if len(foundPaths) == 0 {
 		fmt.Println("Paths not found")

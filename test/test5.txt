@@ -1,9 +1,9 @@
 9
+#rooms
 ##start
 start 0 3
 ##end
 end 10 1
-#rooms
 C0 1 0
 C1 2 0
 C2 3 0

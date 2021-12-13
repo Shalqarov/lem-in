@@ -134,3 +134,14 @@ func (g *Graph) contains(key string) bool {
 	}
 	return false
 }
+
+func PrintPath(path []*Vertex) {
+	if len(path) == 0 {
+		return
+	}
+	fmt.Print(path[0].key)
+	for i := 1; i < len(path); i++ {
+		fmt.Printf(" --> %s", path[i].key)
+	}
+	fmt.Println()
+}
