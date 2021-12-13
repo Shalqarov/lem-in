@@ -1,6 +1,8 @@
-package graphs
+package algorithms
 
-import "fmt"
+import (
+	"fmt"
+)
 
 func (g *Graph) DFS(from, to *Vertex) ([]string, bool) {
 	visited := map[*Vertex]bool{from: true}

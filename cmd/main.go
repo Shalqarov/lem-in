@@ -8,7 +8,7 @@ import (
 	"strconv"
 	"strings"
 
-	paths "git.01.alem.school/MangoMango/lem-in/paths"
+	"git.01.alem.school/MangoMango/lem-in/tools/algorithms"
 )
 
 type Lem struct {
@@ -23,7 +23,7 @@ func main() {
 	lem := Lem{}
 	args := os.Args[1:]
 
-	file, err := os.Open("test/" + args[0])
+	file, err := os.Open("examples/" + args[0])
 	if err != nil {
 		log.Fatalln(err)
 	}
@@ -64,8 +64,8 @@ func main() {
 		fmt.Println(scanner.Text())
 	}
 
-	g := &paths.Graph{}
-	r := &paths.Graph{}
+	g := &algorithms.Graph{}
+	r := &algorithms.Graph{}
 
 	g.AddVertex(lem.StartRoom)
 	r.AddVertex(lem.StartRoom)
@@ -92,7 +92,7 @@ func main() {
 	} else {
 		fmt.Println(len(foundPaths))
 		for _, v := range foundPaths {
-			paths.PrintPath(v)
+			algorithms.PrintPath(v)
 		}
 	}
 
