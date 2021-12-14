@@ -63,7 +63,7 @@ func main() {
 		lem.Rooms = append(lem.Rooms, temp[0])
 		fmt.Println(scanner.Text())
 	}
-
+	fmt.Println()
 	g := &algorithms.Graph{}
 	r := &algorithms.Graph{}
 
@@ -83,17 +83,16 @@ func main() {
 		r.AddEdge(temp[0], temp[1])
 	}
 
-	g.PrintGraph()
+	// g.PrintGraph()
 
 	foundPaths := g.FindAvailablePaths(r, lem.StartRoom, lem.EndRoom)
 
 	if len(foundPaths) == 0 {
 		fmt.Println("Paths not found")
-	} else {
-		fmt.Println(len(foundPaths))
-		for _, v := range foundPaths {
-			algorithms.PrintPath(v)
-		}
+		return
+	}
+	for _, v := range foundPaths {
+		algorithms.PrintPath(v)
 	}
 
 }

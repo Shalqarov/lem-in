@@ -1,7 +1,6 @@
 package algorithms
 
 import (
-	"fmt"
 	"strings"
 )
 
@@ -48,7 +47,6 @@ func (g *Graph) FindAvailablePaths(copiedGraph *Graph, from, to string) [][]*Ver
 			foundPaths = append(foundPaths, path)
 		}
 	}
-
 	return foundPaths
 }
 
@@ -101,6 +99,5 @@ func (g *Graph) BFS(from, to *Vertex) ([]*Vertex, map[*Vertex]bool) {
 		}
 		queue = queue[1:]
 	}
-	fmt.Println("All available paths has been found")
 	return nil, nil
 }

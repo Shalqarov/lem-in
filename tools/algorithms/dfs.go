@@ -1,9 +1,5 @@
 package algorithms
 
-import (
-	"fmt"
-)
-
 func (g *Graph) DFS(from, to *Vertex) ([]string, bool) {
 	visited := map[*Vertex]bool{from: true}
 	queue := []*Vertex{from}
@@ -17,8 +13,8 @@ func (g *Graph) DFS(from, to *Vertex) ([]string, bool) {
 			visited[v] = true
 			v.previous = current
 			if v == to {
-				temp, cross := g.reversepath(v)
-				PrintPath(temp)
+				cross := g.reversepath(v)
+				// PrintPath(temp)
 				return cross, true
 			}
 			queue = append(queue, v)
@@ -26,11 +22,10 @@ func (g *Graph) DFS(from, to *Vertex) ([]string, bool) {
 
 		queue = queue[1:]
 	}
-	fmt.Println("All available paths has been found")
 	return nil, false
 }
 
-func (g *Graph) reversepath(finish *Vertex) ([]*Vertex, []string) {
+func (g *Graph) reversepath(finish *Vertex) []string {
 	reversed := []*Vertex{}
 	crossings := []string{}
 	for node := finish; node != nil; node = node.previous {
@@ -50,5 +45,5 @@ func (g *Graph) reversepath(finish *Vertex) ([]*Vertex, []string) {
 	for i := 1; i < len(res); i++ {
 		g.delEdges(res[i])
 	}
-	return res, crossings
+	return crossings
 }

@@ -8,7 +8,6 @@ type Graph struct {
 
 type Vertex struct {
 	reversed  bool
-	visited   bool
 	key       string
 	adjacents []*Vertex
 	previous  *Vertex
@@ -81,15 +80,11 @@ func (g *Graph) delEdges(v *Vertex) {
 		}
 	}
 	g.AddEdgeOneDir(v.key, v.previous.key)
-	v.visited = true
-	v.previous.visited = true
 }
 
 func (g *Graph) deleteEdge(from, to string) {
 	fromVrtx := g.getVertex(from)
-	fmt.Println(fromVrtx.key)
 	toVrtx := g.getVertex(to)
-	fmt.Println(toVrtx.key)
 
 	for i, val := range fromVrtx.adjacents {
 		if val == toVrtx {
