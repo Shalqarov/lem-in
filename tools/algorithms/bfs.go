@@ -1,32 +1,41 @@
 package algorithms
 
 import (
+	"fmt"
 	"strings"
 )
 
 func (g *Graph) FindAvailablePaths(copiedGraph *Graph, from, to string) [][]*Vertex {
-
 	fromVertex := g.getVertex(from)
 	toVertex := g.getVertex(to)
-	res := []string{}
+	cross := []string{}
 	//DFS
-	for path, pathFinding := copiedGraph.DFS(copiedGraph.getVertex(from), copiedGraph.getVertex(to)); pathFinding; path, pathFinding = copiedGraph.DFS(copiedGraph.getVertex(from), copiedGraph.getVertex(to)) {
-		for _, v := range path {
-			res = append(res, v)
+	for {
+		crossings, pathFinding := copiedGraph.DFS(copiedGraph.getVertex(from), copiedGraph.getVertex(to))
+		if !pathFinding {
+			break
+		}
+		for _, v := range crossings {
+			cross = append(cross, v)
 		}
 	}
 
 	//deleting crossings
-	for _, v := range res {
+	for _, v := range cross {
 		temp := strings.Split(v, "-")
-		g.deleteEdge(string(temp[0]), string(temp[1]))
+		fmt.Println(string(temp[0]), " - ", string(temp[1]))
+		g.deleteEdge(g.getVertex(temp[0]), g.getVertex(temp[1]), false)
 	}
 
 	//BFS
 	foundPaths := [][]*Vertex{}
 	visitChecking := []map[*Vertex]bool{}
 	check := true
-	for path, mapPath := g.BFS(g.getVertex(from), g.getVertex(to)); path != nil; path, mapPath = g.BFS(g.getVertex(from), g.getVertex(to)) {
+	for {
+		path, mapPath := g.BFS(g.getVertex(from), g.getVertex(to))
+		if path == nil {
+			break
+		}
 		if len(path) == 2 {
 			foundPaths = append(foundPaths, path)
 			return foundPaths
@@ -75,7 +84,7 @@ func (g *Graph) getpath(finish *Vertex) ([]*Vertex, map[*Vertex]bool) {
 		mapResult[res[j]] = true
 	}
 	for i := 1; i < len(res); i++ {
-		g.delEdges(res[i])
+		g.deleteEdge(res[i], res[i].previous, true)
 	}
 	return res, mapResult
 }

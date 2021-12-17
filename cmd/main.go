@@ -46,6 +46,9 @@ func main() {
 			fmt.Println(scanner.Text())
 			continue
 		}
+		if scanner.Text() == "" {
+			continue
+		}
 		if scanner.Text()[:1] == "#" {
 			continue
 		}
@@ -64,8 +67,8 @@ func main() {
 		fmt.Println(scanner.Text())
 	}
 	fmt.Println()
-	g := &algorithms.Graph{}
-	r := &algorithms.Graph{}
+	g := algorithms.GraphInit()
+	r := algorithms.GraphInit()
 
 	g.AddVertex(lem.StartRoom)
 	r.AddVertex(lem.StartRoom)
@@ -79,14 +82,13 @@ func main() {
 
 	for _, v := range lem.Edges {
 		temp := strings.Split(v, "-")
-		g.AddEdge(temp[0], temp[1])
-		r.AddEdge(temp[0], temp[1])
+		g.AddEdge(temp[0], temp[1], false)
+		r.AddEdge(temp[0], temp[1], false)
 	}
 
 	// g.PrintGraph()
-
 	foundPaths := g.FindAvailablePaths(r, lem.StartRoom, lem.EndRoom)
-
+	fmt.Println("############################################")
 	if len(foundPaths) == 0 {
 		fmt.Println("Paths not found")
 		return
@@ -95,48 +97,23 @@ func main() {
 		algorithms.PrintPath(v)
 	}
 
+	// antsOnEachPath := make([]int, len(foundPaths))
+	// antsOnEachPath[0]++
+	// lem.Ants--
+	// for i, j := 0, 0; lem.Ants > 0; {
+	// 	if i+1 < len(foundPaths) {
+	// 		if len(foundPaths[i])+antsOnEachPath[j]+1 <= len(foundPaths[i+1]) {
+	// 			antsOnEachPath[j]++
+	// 			fmt.Println("AAAAAAAA")
+	// 			lem.Ants--
+	// 			continue
+	// 		}
+	// 		i++
+	// 		j++
+	// 	} else {
+	// 		i = 0
+	// 		j = 0
+	// 	}
+	// }
+	// fmt.Println(antsOnEachPath)
 }
-
-// g := &path.Graph{}
-// 	for i := 'a'; i <= 'n'; i++ {
-// 		g.AddVertex(string(i))
-// 	}
-// 	g.AddEdge("b", "a")
-// 	g.AddEdge("d", "a")
-// 	g.AddEdge("d", "i")
-// 	g.AddEdge("j", "i")
-// 	g.AddEdge("b", "e")
-// 	g.AddEdge("b", "c")
-// 	g.AddEdge("f", "c")
-// 	g.AddEdge("e", "h")
-// 	g.AddEdge("e", "g")
-// 	g.AddEdge("h", "l")
-// 	g.AddEdge("n", "l")
-// 	g.AddEdge("n", "m")
-// 	g.AddEdge("g", "f")
-// 	g.AddEdge("g", "j")
-// 	g.AddEdge("g", "k")
-// 	g.AddEdge("m", "k")
-// 	g.AddEdge("j", "m")
-
-// 	r := &path.Graph{}
-// 	for i := 'a'; i <= 'n'; i++ {
-// 		r.AddVertex(string(i))
-// 	}
-// 	r.AddEdge("b", "a")
-// 	r.AddEdge("d", "a")
-// 	r.AddEdge("d", "i")
-// 	r.AddEdge("j", "i")
-// 	r.AddEdge("b", "e")
-// 	r.AddEdge("b", "c")
-// 	r.AddEdge("f", "c")
-// 	r.AddEdge("e", "h")
-// 	r.AddEdge("e", "g")
-// 	r.AddEdge("h", "l")
-// 	r.AddEdge("n", "l")
-// 	r.AddEdge("n", "m")
-// 	r.AddEdge("g", "f")
-// 	r.AddEdge("g", "j")
-// 	r.AddEdge("g", "k")
-// 	r.AddEdge("m", "k")
-// 	r.AddEdge("j", "m")

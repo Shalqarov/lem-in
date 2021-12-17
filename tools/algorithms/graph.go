@@ -13,6 +13,10 @@ type Vertex struct {
 	previous  *Vertex
 }
 
+func GraphInit() *Graph {
+	return &Graph{}
+}
+
 func (g *Graph) AddVertex(key string) {
 	if g.contains(key) {
 		fmt.Printf("Oh snap: '%s' is already exists", key)
@@ -20,7 +24,7 @@ func (g *Graph) AddVertex(key string) {
 	g.vertices = append(g.vertices, &Vertex{key: key})
 }
 
-func (g *Graph) AddEdge(from, to string) {
+func (g *Graph) AddEdge(from, to string, isOneDirection bool) {
 	fromVrtx := g.getVertex(from)
 	if fromVrtx == nil {
 		fmt.Printf("Oh snap: '%s' don't exists", from)
@@ -32,71 +36,26 @@ func (g *Graph) AddEdge(from, to string) {
 		return
 	}
 	fromVrtx.adjacents = append(fromVrtx.adjacents, toVrtx)
-	toVrtx.adjacents = append(toVrtx.adjacents, fromVrtx)
+	if !isOneDirection {
+		toVrtx.adjacents = append(toVrtx.adjacents, fromVrtx)
+	}
 }
 
-func (g *Graph) AddEdgeOneDir(from, to string) {
-	fromVrtx := g.getVertex(from)
-	if fromVrtx == nil {
-		fmt.Printf("Oh snap: '%s' don't exists", from)
-		return
-	}
-	toVrtx := g.getVertex(to)
-	if toVrtx == nil {
-		fmt.Printf("Oh snap: '%s' don't exists", to)
-		return
-	}
-	fromVrtx.adjacents = append(fromVrtx.adjacents, toVrtx)
-}
-
-func (g *Graph) swapEdges(v *Vertex) {
-	for i, val := range v.adjacents {
-		if val == v {
-			v.adjacents = append(v.adjacents[:i], v.adjacents[i+1:]...)
+func (g *Graph) deleteEdge(from, to *Vertex, isChangeDirection bool) {
+	for i, val := range from.adjacents {
+		if val == to {
+			from.adjacents = append(from.adjacents[:i], from.adjacents[i+1:]...)
 			break
 		}
 	}
-	for i, val := range v.previous.adjacents {
-		if val == v {
-			v.adjacents = append(v.adjacents[:i], v.adjacents[i+1:]...)
+	for i, val := range to.adjacents {
+		if val == from {
+			to.adjacents = append(to.adjacents[:i], to.adjacents[i+1:]...)
 			break
 		}
 	}
-	g.AddEdgeOneDir(v.key, v.previous.key)
-	v.previous = nil
-}
-
-func (g *Graph) delEdges(v *Vertex) {
-	for i, val := range v.adjacents {
-		if val == v.previous {
-			v.adjacents = append(v.adjacents[:i], v.adjacents[i+1:]...)
-			break
-		}
-	}
-	for i, val := range v.previous.adjacents {
-		if val == v {
-			v.previous.adjacents = append(v.previous.adjacents[:i], v.previous.adjacents[i+1:]...)
-			break
-		}
-	}
-	g.AddEdgeOneDir(v.key, v.previous.key)
-}
-
-func (g *Graph) deleteEdge(from, to string) {
-	fromVrtx := g.getVertex(from)
-	toVrtx := g.getVertex(to)
-
-	for i, val := range fromVrtx.adjacents {
-		if val == toVrtx {
-			fromVrtx.adjacents = append(fromVrtx.adjacents[:i], fromVrtx.adjacents[i+1:]...)
-			break
-		}
-	}
-	for i, val := range toVrtx.adjacents {
-		if val == fromVrtx {
-			toVrtx.adjacents = append(toVrtx.adjacents[:i], toVrtx.adjacents[i+1:]...)
-			break
-		}
+	if isChangeDirection {
+		g.AddEdge(from.key, to.key, true)
 	}
 }
 

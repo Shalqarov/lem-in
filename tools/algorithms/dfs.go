@@ -1,11 +1,31 @@
 package algorithms
 
+// bfs
 func (g *Graph) DFS(from, to *Vertex) ([]string, bool) {
 	visited := map[*Vertex]bool{from: true}
 	queue := []*Vertex{from}
 
+START:
 	for len(queue) > 0 {
 		current := queue[0]
+		for _, v := range current.adjacents {
+			if v.reversed {
+				if visited[v] {
+					continue
+				}
+				visited[v] = true
+				v.previous = current
+				if v == to {
+					temp, cross := g.reversepath(v)
+					PrintPath(temp)
+					return cross, true
+				}
+				queue = append(queue, v)
+				queue = queue[1:]
+				continue START
+			}
+		}
+
 		for _, v := range current.adjacents {
 			if visited[v] {
 				continue
@@ -13,8 +33,8 @@ func (g *Graph) DFS(from, to *Vertex) ([]string, bool) {
 			visited[v] = true
 			v.previous = current
 			if v == to {
-				cross := g.reversepath(v)
-				// PrintPath(temp)
+				temp, cross := g.reversepath(v)
+				PrintPath(temp)
 				return cross, true
 			}
 			queue = append(queue, v)
@@ -25,11 +45,11 @@ func (g *Graph) DFS(from, to *Vertex) ([]string, bool) {
 	return nil, false
 }
 
-func (g *Graph) reversepath(finish *Vertex) []string {
+func (g *Graph) reversepath(finish *Vertex) ([]*Vertex, []string) {
 	reversed := []*Vertex{}
 	crossings := []string{}
 	for node := finish; node != nil; node = node.previous {
-		if node != nil && node.previous != nil {
+		if node.previous != nil {
 			if node.reversed && node.previous.reversed {
 				temp := node.previous.key + "-" + node.key
 				crossings = append(crossings, temp)
@@ -43,7 +63,7 @@ func (g *Graph) reversepath(finish *Vertex) []string {
 		res[j] = reversed[i]
 	}
 	for i := 1; i < len(res); i++ {
-		g.delEdges(res[i])
+		g.deleteEdge(res[i], res[i].previous, true)
 	}
-	return crossings
+	return res, crossings
 }
