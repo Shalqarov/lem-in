@@ -95,12 +95,17 @@ func main() {
 		algorithms.PrintPath(v)
 	}
 
-	fmt.Println(lem.Ants)
+	fmt.Println("Ants:", lem.Ants)
 
 	antsOnEachPath := make([]int, len(foundPaths))
+	L := make([][]string, len(foundPaths))
 	antsOnEachPath[0]++
+	cnt := 1
+	L[0] = append(L[0], "L"+strconv.Itoa(cnt))
+	cnt++
 	lem.Ants--
 	if len(foundPaths) > 1 {
+
 		for i := 0; lem.Ants > 0; {
 			if i+1 >= len(foundPaths) {
 				i = 0
@@ -110,26 +115,38 @@ func main() {
 			// то засчитываю муравья на нынешнем пути...
 			if len(foundPaths[i])+antsOnEachPath[i] == len(foundPaths[i+1])+antsOnEachPath[i+1] {
 				antsOnEachPath[i]++
+				L[i] = append(L[i], "L"+strconv.Itoa(cnt))
+				cnt++
 				lem.Ants--
 				continue
 			} else if len(foundPaths[i])+antsOnEachPath[i] < len(foundPaths[i+1])+antsOnEachPath[i+1] {
 				antsOnEachPath[i]++
+				L[i] = append(L[i], "L"+strconv.Itoa(cnt))
+				cnt++
 				lem.Ants--
 				i = 0
 				continue
 			}
 			// ...иначе добавляю муравья на след путь
 			antsOnEachPath[i+1]++
+			L[i+1] = append(L[i+1], "L"+strconv.Itoa(cnt))
+			cnt++
 			lem.Ants--
 			i++
 		}
 	} else { // если путь только один
-		antsOnEachPath[0] = lem.Ants + 1 // + 1 муравей, потому что по умолчанию одного муравья ставлю в первый путь
+		antsOnEachPath[0] += lem.Ants
+		for i := 1; i < antsOnEachPath[0]; i++ {
+			L[0] = append(L[0], "L"+strconv.Itoa(cnt))
+			cnt++
+		}
 	}
 	for i, v := range antsOnEachPath {
 		fmt.Println(i+1, "Path:", v, "ants")
 	}
 
-	// res := [][]string{}
+	for _, v := range L {
+		fmt.Println(v)
+	}
 
 }
