@@ -5,11 +5,18 @@ import (
 	"strings"
 )
 
-func (g *Graph) FindAvailablePaths(copiedGraph *Graph, from, to string) [][]*Vertex {
+func (g *Graph) FindAvailablePaths(copiedGraph *Graph, from, to string, ants int) [][]*Vertex {
 	fromVertex := g.getVertex(from)
 	toVertex := g.getVertex(to)
 	cross := []string{}
-	//DFS
+
+	if ants <= 2 {
+		temp, _ := g.BFS(g.getVertex(from), g.getVertex(to))
+		res := [][]*Vertex{temp}
+		return res
+	}
+
+	// DFS
 	for {
 		crossings, pathFinding := copiedGraph.DFS(copiedGraph.getVertex(from), copiedGraph.getVertex(to))
 		if !pathFinding {

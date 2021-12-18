@@ -25,32 +25,32 @@ func (g *Graph) AddVertex(key string) {
 }
 
 func (g *Graph) AddEdge(from, to string, isOneDirection bool) {
-	fromVrtx := g.getVertex(from)
-	if fromVrtx == nil {
+	fromVertex := g.getVertex(from)
+	if fromVertex == nil {
 		fmt.Printf("Oh snap: '%s' don't exists", from)
 		return
 	}
-	toVrtx := g.getVertex(to)
-	if toVrtx == nil {
+	toVertex := g.getVertex(to)
+	if toVertex == nil {
 		fmt.Printf("Oh snap: '%s' don't exists", to)
 		return
 	}
-	fromVrtx.adjacents = append(fromVrtx.adjacents, toVrtx)
+	fromVertex.adjacents = append(fromVertex.adjacents, toVertex)
 	if !isOneDirection {
-		toVrtx.adjacents = append(toVrtx.adjacents, fromVrtx)
+		toVertex.adjacents = append(toVertex.adjacents, fromVertex)
 	}
 }
 
 func (g *Graph) deleteEdge(from, to *Vertex, isChangeDirection bool) {
-	for i, val := range from.adjacents {
-		if val == to {
-			from.adjacents = append(from.adjacents[:i], from.adjacents[i+1:]...)
+	for index, vertex := range from.adjacents {
+		if vertex == to {
+			from.adjacents = append(from.adjacents[:index], from.adjacents[index+1:]...)
 			break
 		}
 	}
-	for i, val := range to.adjacents {
-		if val == from {
-			to.adjacents = append(to.adjacents[:i], to.adjacents[i+1:]...)
+	for index, vertex := range to.adjacents {
+		if vertex == from {
+			to.adjacents = append(to.adjacents[:index], to.adjacents[index+1:]...)
 			break
 		}
 	}
@@ -61,10 +61,10 @@ func (g *Graph) deleteEdge(from, to *Vertex, isChangeDirection bool) {
 
 func (g *Graph) PrintGraph() {
 	fmt.Println("#### PRINT GRAPH ####")
-	for _, v := range g.vertices {
-		fmt.Printf("# Vertex %v : ", v.key)
-		for _, v := range v.adjacents {
-			fmt.Printf("%v ", v.key)
+	for _, vertex := range g.vertices {
+		fmt.Printf("# Vertex %v : ", vertex.key)
+		for _, vertex := range vertex.adjacents {
+			fmt.Printf("%v ", vertex.key)
 		}
 		fmt.Println()
 	}
@@ -72,17 +72,17 @@ func (g *Graph) PrintGraph() {
 }
 
 func (g *Graph) getVertex(key string) *Vertex {
-	for _, v := range g.vertices {
-		if v.key == key {
-			return v
+	for _, vertex := range g.vertices {
+		if vertex.key == key {
+			return vertex
 		}
 	}
 	return nil
 }
 
 func (g *Graph) contains(key string) bool {
-	for _, v := range g.vertices {
-		if v.key == key {
+	for _, vertex := range g.vertices {
+		if vertex.key == key {
 			return true
 		}
 	}

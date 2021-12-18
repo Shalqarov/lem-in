@@ -5,27 +5,8 @@ func (g *Graph) DFS(from, to *Vertex) ([]string, bool) {
 	visited := map[*Vertex]bool{from: true}
 	queue := []*Vertex{from}
 
-START:
 	for len(queue) > 0 {
 		current := queue[0]
-		for _, v := range current.adjacents {
-			if v.reversed {
-				if visited[v] {
-					continue
-				}
-				visited[v] = true
-				v.previous = current
-				if v == to {
-					temp, cross := g.reversepath(v)
-					PrintPath(temp)
-					return cross, true
-				}
-				queue = append(queue, v)
-				queue = queue[1:]
-				continue START
-			}
-		}
-
 		for _, v := range current.adjacents {
 			if visited[v] {
 				continue

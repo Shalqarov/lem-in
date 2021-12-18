@@ -30,6 +30,13 @@ func main() {
 	defer file.Close()
 
 	for scanner := bufio.NewScanner(file); scanner.Scan(); {
+		if scanner.Text() == "" {
+			continue
+		}
+		if ants, err := strconv.Atoi(scanner.Text()); err == nil {
+			lem.Ants = ants
+			continue
+		}
 		if scanner.Text() == "##start" {
 			fmt.Println(scanner.Text())
 			scanner.Scan()
@@ -46,20 +53,12 @@ func main() {
 			fmt.Println(scanner.Text())
 			continue
 		}
-		if scanner.Text() == "" {
-			continue
-		}
 		if scanner.Text()[:1] == "#" {
 			continue
 		}
 		if strings.Contains(scanner.Text(), "-") {
 			lem.Edges = append(lem.Edges, scanner.Text())
 			fmt.Println(scanner.Text())
-			continue
-		}
-		if len(scanner.Text()) == 1 {
-			temp, _ := strconv.Atoi(scanner.Text())
-			lem.Ants = temp
 			continue
 		}
 		temp := strings.Split(scanner.Text(), " ")
@@ -86,8 +85,7 @@ func main() {
 		r.AddEdge(temp[0], temp[1], false)
 	}
 
-	// g.PrintGraph()
-	foundPaths := g.FindAvailablePaths(r, lem.StartRoom, lem.EndRoom)
+	foundPaths := g.FindAvailablePaths(r, lem.StartRoom, lem.EndRoom, lem.Ants)
 	fmt.Println("############################################")
 	if len(foundPaths) == 0 {
 		fmt.Println("Paths not found")
@@ -97,23 +95,36 @@ func main() {
 		algorithms.PrintPath(v)
 	}
 
-	// antsOnEachPath := make([]int, len(foundPaths))
-	// antsOnEachPath[0]++
-	// lem.Ants--
-	// for i, j := 0, 0; lem.Ants > 0; {
-	// 	if i+1 < len(foundPaths) {
-	// 		if len(foundPaths[i])+antsOnEachPath[j]+1 <= len(foundPaths[i+1]) {
-	// 			antsOnEachPath[j]++
-	// 			fmt.Println("AAAAAAAA")
-	// 			lem.Ants--
-	// 			continue
-	// 		}
-	// 		i++
-	// 		j++
-	// 	} else {
-	// 		i = 0
-	// 		j = 0
-	// 	}
-	// }
-	// fmt.Println(antsOnEachPath)
+	fmt.Println(lem.Ants)
+
+	antsOnEachPath := make([]int, len(foundPaths))
+	antsOnEachPath[0]++
+	lem.Ants--
+	if len(foundPaths) > 1 {
+		for i := 0; lem.Ants > 0; {
+			if i+1 >= len(foundPaths) {
+				i = 0
+			}
+			// Если кол-во комнат + кол-во муравьев на этом пути меньше или равно
+			// кол-вам комнат + кол-вам муравьев следующего пути
+			// то засчитываю муравья на нынешнем пути...
+			if len(foundPaths[i])+antsOnEachPath[i] <= len(foundPaths[i+1])+antsOnEachPath[i+1] {
+				antsOnEachPath[i]++
+				lem.Ants--
+				continue
+			}
+			// ...иначе добавляю муравья на след путь
+			antsOnEachPath[i+1]++
+			lem.Ants--
+			i++
+		}
+	} else { // если путь только один
+		antsOnEachPath[0] = lem.Ants + 1 // + 1 муравей, потому что по умолчанию одного муравья ставлю в первый путь
+	}
+	for i, v := range antsOnEachPath {
+		fmt.Println(i+1, "Path:", v, "ants")
+	}
+
+	// res := [][]string{}
+
 }
