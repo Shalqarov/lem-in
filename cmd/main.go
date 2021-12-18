@@ -108,9 +108,14 @@ func main() {
 			// Если кол-во комнат + кол-во муравьев на этом пути меньше или равно
 			// кол-вам комнат + кол-вам муравьев следующего пути
 			// то засчитываю муравья на нынешнем пути...
-			if len(foundPaths[i])+antsOnEachPath[i] <= len(foundPaths[i+1])+antsOnEachPath[i+1] {
+			if len(foundPaths[i])+antsOnEachPath[i] == len(foundPaths[i+1])+antsOnEachPath[i+1] {
 				antsOnEachPath[i]++
 				lem.Ants--
+				continue
+			} else if len(foundPaths[i])+antsOnEachPath[i] < len(foundPaths[i+1])+antsOnEachPath[i+1] {
+				antsOnEachPath[i]++
+				lem.Ants--
+				i = 0
 				continue
 			}
 			// ...иначе добавляю муравья на след путь
