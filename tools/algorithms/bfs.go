@@ -44,12 +44,12 @@ func (g *Graph) FindAvailablePaths(copiedGraph *Graph, from, to string, ants int
 			break
 		}
 		if len(path) == 2 {
-			foundPaths = append(foundPaths, path)
+			foundPaths = append(foundPaths, path[1:])
 			return foundPaths
 		}
 		if len(visitChecking) == 0 {
 			visitChecking = append(visitChecking, mapPath)
-			foundPaths = append(foundPaths, path)
+			foundPaths = append(foundPaths, path[1:])
 			continue
 		}
 		for _, v := range visitChecking {
@@ -60,7 +60,7 @@ func (g *Graph) FindAvailablePaths(copiedGraph *Graph, from, to string, ants int
 		}
 		if check {
 			visitChecking = append(visitChecking, mapPath)
-			foundPaths = append(foundPaths, path)
+			foundPaths = append(foundPaths, path[1:])
 		}
 	}
 	return foundPaths

@@ -110,18 +110,19 @@ func main() {
 			if i+1 >= len(foundPaths) {
 				i = 0
 			}
+			a := fmt.Sprintf("L%v", cnt)
 			// Если кол-во комнат + кол-во муравьев на этом пути меньше или равно
 			// кол-вам комнат + кол-вам муравьев следующего пути
 			// то засчитываю муравья на нынешнем пути...
 			if len(foundPaths[i])+antsOnEachPath[i] == len(foundPaths[i+1])+antsOnEachPath[i+1] {
 				antsOnEachPath[i]++
-				L[i] = append(L[i], "L"+strconv.Itoa(cnt))
+				L[i] = append(L[i], a)
 				cnt++
 				lem.Ants--
 				continue
 			} else if len(foundPaths[i])+antsOnEachPath[i] < len(foundPaths[i+1])+antsOnEachPath[i+1] {
 				antsOnEachPath[i]++
-				L[i] = append(L[i], "L"+strconv.Itoa(cnt))
+				L[i] = append(L[i], a)
 				cnt++
 				lem.Ants--
 				i = 0
@@ -129,7 +130,7 @@ func main() {
 			}
 			// ...иначе добавляю муравья на след путь
 			antsOnEachPath[i+1]++
-			L[i+1] = append(L[i+1], "L"+strconv.Itoa(cnt))
+			L[i+1] = append(L[i+1], a)
 			cnt++
 			lem.Ants--
 			i++
@@ -144,9 +145,21 @@ func main() {
 	for i, v := range antsOnEachPath {
 		fmt.Println(i+1, "Path:", v, "ants")
 	}
+	// maxLen := len(L[0])
+	// for _, v := range L {
+	// 	fmt.Println(v)
+	// 	if len(v) > maxLen {
+	// 		maxLen = len(v)
+	// 	}
+	// }
 
-	for _, v := range L {
-		fmt.Println(v)
-	}
+	// res := [][]string{}
+	// for _, v := range L {
+	// 	for i := 0; i < maxLen; i++ {
+	// 		if i < len(v) {
+
+	// 		}
+	// 	}
+	// }
 
 }
