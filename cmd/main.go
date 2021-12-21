@@ -145,21 +145,50 @@ func main() {
 	for i, v := range antsOnEachPath {
 		fmt.Println(i+1, "Path:", v, "ants")
 	}
-	// maxLen := len(L[0])
-	// for _, v := range L {
-	// 	fmt.Println(v)
-	// 	if len(v) > maxLen {
-	// 		maxLen = len(v)
-	// 	}
-	// }
+	maxLen := len(L[0])
+	for _, v := range L {
+		fmt.Println(v)
+		if len(v) > maxLen {
+			maxLen = len(v)
+		}
+	}
 
-	// res := [][]string{}
-	// for _, v := range L {
-	// 	for i := 0; i < maxLen; i++ {
-	// 		if i < len(v) {
+	res := make([][]string, 1)
 
-	// 		}
-	// 	}
-	// }
+	element := 0
+	counter := 0
+	for idx := 0; idx < len(L); idx++ {
+		for resIndex, vertex := range foundPaths[idx] {
+			if element >= len(L[idx]) {
+				break
+			}
+			if resIndex+counter >= len(res) {
+				res = append(res, []string{})
+			}
+			res[resIndex+counter] = append(res[resIndex+counter], L[idx][element]+"-"+vertex.Key)
+		}
+		if idx+1 >= len(L) {
+			idx = -1
+			element++
+			counter++
+		}
+		if element >= maxLen {
+			break
+		}
+	}
 
+	for i, v := range res {
+		fmt.Print(i+1, "   ")
+		fmt.Println(v)
+	}
 }
+
+/*
+L1-gilfoyle L2-dinish
+L1-peter L2-jimYoung L3-gilfoyle L4-dinish
+L2-peter L3-peter L4-jimYoung L5-gilfoyle L6-dinish
+L4-peter L5-peter L6-jimYoung L7-gilfoyle L8-dinish
+L6-peter L7-peter L8-jimYoung L9-gilfoyle
+L8-peter L9-peter L10-gilfoyle
+L10-peter
+*/

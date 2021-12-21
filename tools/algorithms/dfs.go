@@ -32,7 +32,7 @@ func (g *Graph) reversepath(finish *Vertex) ([]*Vertex, []string) {
 	for node := finish; node != nil; node = node.previous {
 		if node.previous != nil {
 			if node.reversed && node.previous.reversed {
-				temp := node.previous.key + "-" + node.key
+				temp := node.previous.Key + "-" + node.Key
 				crossings = append(crossings, temp)
 			}
 		}
