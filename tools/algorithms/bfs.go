@@ -44,6 +44,7 @@ func (g *Graph) FindAvailablePaths(copiedGraph *Graph, from, to string, ants int
 			break
 		}
 		if len(path) == 2 {
+			// не возвращаю стартовую вершину
 			foundPaths = append(foundPaths, path[1:])
 			return foundPaths
 		}
