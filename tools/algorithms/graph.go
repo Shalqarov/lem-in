@@ -8,21 +8,28 @@ type Graph struct {
 
 type Vertex struct {
 	reversed  bool
-	Key       string
+	key       string
 	adjacents []*Vertex
 	previous  *Vertex
-	sext      *Vertex
+}
+
+func (v *Vertex) GetAdjacents() []*Vertex {
+	return v.adjacents
+}
+
+func (v *Vertex) GetKey() string {
+	return v.key
 }
 
 func GraphInit() *Graph {
 	return &Graph{}
 }
 
-func (g *Graph) AddVertex(key string) {
-	if g.contains(key) {
+func (g *Graph) AppendVertex(key string) {
+	if g.containsVertex(key) {
 		fmt.Printf("Oh snap: '%s' is already exists", key)
 	}
-	g.vertices = append(g.vertices, &Vertex{Key: key})
+	g.vertices = append(g.vertices, &Vertex{key: key})
 }
 
 func (g *Graph) AddEdge(from, to string, isOneDirection bool) {
@@ -56,16 +63,16 @@ func (g *Graph) deleteEdge(from, to *Vertex, isChangeDirection bool) {
 		}
 	}
 	if isChangeDirection {
-		g.AddEdge(from.Key, to.Key, true)
+		g.AddEdge(from.key, to.key, true)
 	}
 }
 
 func (g *Graph) PrintGraph() {
 	fmt.Println("#### PRINT GRAPH ####")
 	for _, vertex := range g.vertices {
-		fmt.Printf("# Vertex %v : ", vertex.Key)
+		fmt.Printf("# Vertex %v : ", vertex.key)
 		for _, vertex := range vertex.adjacents {
-			fmt.Printf("%v ", vertex.Key)
+			fmt.Printf("%v ", vertex.key)
 		}
 		fmt.Println()
 	}
@@ -74,16 +81,16 @@ func (g *Graph) PrintGraph() {
 
 func (g *Graph) getVertex(key string) *Vertex {
 	for _, vertex := range g.vertices {
-		if vertex.Key == key {
+		if vertex.key == key {
 			return vertex
 		}
 	}
 	return nil
 }
 
-func (g *Graph) contains(key string) bool {
+func (g *Graph) containsVertex(key string) bool {
 	for _, vertex := range g.vertices {
-		if vertex.Key == key {
+		if vertex.key == key {
 			return true
 		}
 	}
@@ -94,9 +101,9 @@ func PrintPath(path []*Vertex) {
 	if len(path) == 0 {
 		return
 	}
-	fmt.Print(path[0].Key)
+	fmt.Print(path[0].key)
 	for i := 1; i < len(path); i++ {
-		fmt.Printf(" --> %s", path[i].Key)
+		fmt.Printf(" --> %s", path[i].key)
 	}
 	fmt.Println()
 }

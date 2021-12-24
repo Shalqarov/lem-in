@@ -14,8 +14,7 @@ func (g *Graph) DFS(from, to *Vertex) ([]string, bool) {
 			visited[v] = true
 			v.previous = current
 			if v == to {
-				temp, cross := g.reversepath(v)
-				PrintPath(temp)
+				cross := g.reversepath(v)
 				return cross, true
 			}
 			queue = append(queue, v)
@@ -26,13 +25,13 @@ func (g *Graph) DFS(from, to *Vertex) ([]string, bool) {
 	return nil, false
 }
 
-func (g *Graph) reversepath(finish *Vertex) ([]*Vertex, []string) {
+func (g *Graph) reversepath(finish *Vertex) []string {
 	reversed := []*Vertex{}
 	crossings := []string{}
 	for node := finish; node != nil; node = node.previous {
 		if node.previous != nil {
 			if node.reversed && node.previous.reversed {
-				temp := node.previous.Key + "-" + node.Key
+				temp := node.previous.key + " " + node.key
 				crossings = append(crossings, temp)
 			}
 		}
@@ -46,5 +45,5 @@ func (g *Graph) reversepath(finish *Vertex) ([]*Vertex, []string) {
 	for i := 1; i < len(res); i++ {
 		g.deleteEdge(res[i], res[i].previous, true)
 	}
-	return res, crossings
+	return crossings
 }
