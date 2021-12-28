@@ -14,7 +14,7 @@ func (g *Graph) FindAvailablePaths(copiedGraph *Graph, from, to string, ants int
 	}
 
 	for {
-		crossedVertices, pathFound := copiedGraph.DFS(copiedGraph.getVertex(from), copiedGraph.getVertex(to))
+		crossedVertices, pathFound := copiedGraph.FindingCrossings(copiedGraph.getVertex(from), copiedGraph.getVertex(to))
 		if !pathFound {
 			break
 		}
@@ -24,7 +24,7 @@ func (g *Graph) FindAvailablePaths(copiedGraph *Graph, from, to string, ants int
 	//deleting crossings
 	for _, v := range crossings {
 		temp := strings.Split(v, " ")
-		g.deleteEdge(g.getVertex(temp[0]), g.getVertex(temp[1]), false)
+		g.deleteEdge(g.getVertex(temp[0]), g.getVertex(temp[1]))
 	}
 
 	//BFS
@@ -92,7 +92,8 @@ func (g *Graph) getpath(finish *Vertex) ([]*Vertex, map[*Vertex]bool) {
 		mapResult[res[j]] = true
 	}
 	for i := 1; i < len(res); i++ {
-		g.deleteEdge(res[i], res[i].previous, true)
+		g.deleteEdge(res[i], res[i].previous)
+		g.AddOneDirectedEdge(res[i], res[i].previous)
 	}
 	return res, mapResult
 }

@@ -32,24 +32,16 @@ func (g *Graph) AppendVertex(key string) {
 	g.vertices = append(g.vertices, &Vertex{key: key})
 }
 
-func (g *Graph) AddEdge(from, to string, isOneDirection bool) {
-	fromVertex := g.getVertex(from)
-	if fromVertex == nil {
-		fmt.Printf("Oh snap: '%s' don't exists", from)
-		return
-	}
-	toVertex := g.getVertex(to)
-	if toVertex == nil {
-		fmt.Printf("Oh snap: '%s' don't exists", to)
-		return
-	}
-	fromVertex.adjacents = append(fromVertex.adjacents, toVertex)
-	if !isOneDirection {
-		toVertex.adjacents = append(toVertex.adjacents, fromVertex)
-	}
+func (g *Graph) AddEdge(from, to *Vertex) {
+	from.adjacents = append(from.adjacents, to)
+	to.adjacents = append(to.adjacents, from)
 }
 
-func (g *Graph) deleteEdge(from, to *Vertex, isChangeDirection bool) {
+func (g *Graph) AddOneDirectedEdge(from, to *Vertex) {
+	from.adjacents = append(from.adjacents, to)
+}
+
+func (g *Graph) deleteEdge(from, to *Vertex) {
 	for index, vertex := range from.adjacents {
 		if vertex == to {
 			from.adjacents = append(from.adjacents[:index], from.adjacents[index+1:]...)
@@ -61,9 +53,6 @@ func (g *Graph) deleteEdge(from, to *Vertex, isChangeDirection bool) {
 			to.adjacents = append(to.adjacents[:index], to.adjacents[index+1:]...)
 			break
 		}
-	}
-	if isChangeDirection {
-		g.AddEdge(from.key, to.key, true)
 	}
 }
 

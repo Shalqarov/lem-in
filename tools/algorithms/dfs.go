@@ -1,7 +1,7 @@
 package algorithms
 
 // bfs
-func (g *Graph) DFS(from, to *Vertex) ([]string, bool) {
+func (g *Graph) FindingCrossings(from, to *Vertex) ([]string, bool) {
 	visited := map[*Vertex]bool{from: true}
 	queue := []*Vertex{from}
 
@@ -43,7 +43,8 @@ func (g *Graph) reversepath(finish *Vertex) []string {
 		res[j] = reversed[i]
 	}
 	for i := 1; i < len(res); i++ {
-		g.deleteEdge(res[i], res[i].previous, true)
+		g.deleteEdge(res[i], res[i].previous)
+		g.AddOneDirectedEdge(res[i], res[i].previous)
 	}
 	return crossings
 }

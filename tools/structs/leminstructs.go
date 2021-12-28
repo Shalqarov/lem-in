@@ -18,19 +18,24 @@ type RoomsAndAnts struct {
 }
 
 //FileRead - reads file and returns struct with rooms and count of ants
-func FileRead(filepath string) *RoomsAndAnts {
+func FileRead(filepath string) (*RoomsAndAnts, error) {
 	roomsAndAnts := &RoomsAndAnts{}
 	file, err := os.Open("examples/" + filepath)
 	if err != nil {
 		log.Fatalln(err)
 	}
 	defer file.Close()
-	for scanner := bufio.NewScanner(file); scanner.Scan(); {
-		if scanner.Text() == "" {
-			continue
+	for scanner, step := bufio.NewScanner(file), 0; scanner.Scan(); {
+		if step == 0 {
+			step++
+			if ants, err := strconv.Atoi(scanner.Text()); err == nil {
+				roomsAndAnts.Ants = ants
+				continue
+			} else if ants <= 0 || err != nil {
+				return nil, fmt.Errorf("invalid number of ants")
+			}
 		}
-		if ants, err := strconv.Atoi(scanner.Text()); err == nil {
-			roomsAndAnts.Ants = ants
+		if scanner.Text() == "" {
 			continue
 		}
 		if scanner.Text() == "##start" {
@@ -61,5 +66,5 @@ func FileRead(filepath string) *RoomsAndAnts {
 		roomsAndAnts.Rooms = append(roomsAndAnts.Rooms, temp[0])
 		fmt.Println(scanner.Text())
 	}
-	return roomsAndAnts
+	return roomsAndAnts, nil
 }

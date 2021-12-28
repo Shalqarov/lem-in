@@ -12,7 +12,11 @@ import (
 func main() {
 
 	args := os.Args[1:]
-	rooms := structs.FileRead(args[0])
+	rooms, err := structs.FileRead(args[0])
+	if err != nil {
+		fmt.Printf("ERROR:%s", err)
+		return
+	}
 	mainGraph, copiedGraph := algorithms.SetGraphs(rooms)
 
 	foundPaths := mainGraph.FindAvailablePaths(copiedGraph, rooms.StartRoom, rooms.EndRoom, rooms.Ants)
