@@ -111,9 +111,11 @@ func main() {
 		}
 	}
 
-	for i, v := range res {
-		fmt.Print(i+1, "   ")
-		fmt.Println(v)
+	for _, stack := range res {
+		for _, ant := range stack {
+			fmt.Printf("%s ", ant)
+		}
+		fmt.Println()
 	}
 }
 

@@ -39,19 +39,15 @@ func FileRead(filepath string) (*RoomsAndAnts, error) {
 			continue
 		}
 		if scanner.Text() == "##start" {
-			fmt.Println(scanner.Text())
 			scanner.Scan()
 			temp := strings.Split(scanner.Text(), " ")
 			roomsAndAnts.StartRoom = temp[0]
-			fmt.Println(scanner.Text())
 			continue
 		}
 		if scanner.Text() == "##end" {
-			fmt.Println(scanner.Text())
 			scanner.Scan()
 			temp := strings.Split(scanner.Text(), " ")
 			roomsAndAnts.EndRoom = temp[0]
-			fmt.Println(scanner.Text())
 			continue
 		}
 		if scanner.Text()[:1] == "#" {
@@ -59,12 +55,10 @@ func FileRead(filepath string) (*RoomsAndAnts, error) {
 		}
 		if strings.Contains(scanner.Text(), "-") {
 			roomsAndAnts.Edges = append(roomsAndAnts.Edges, scanner.Text())
-			fmt.Println(scanner.Text())
 			continue
 		}
 		temp := strings.Split(scanner.Text(), " ")
 		roomsAndAnts.Rooms = append(roomsAndAnts.Rooms, temp[0])
-		fmt.Println(scanner.Text())
 	}
 	return roomsAndAnts, nil
 }

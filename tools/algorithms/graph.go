@@ -56,18 +56,6 @@ func (g *Graph) deleteEdge(from, to *Vertex) {
 	}
 }
 
-func (g *Graph) PrintGraph() {
-	fmt.Println("#### PRINT GRAPH ####")
-	for _, vertex := range g.vertices {
-		fmt.Printf("# Vertex %v : ", vertex.key)
-		for _, vertex := range vertex.adjacents {
-			fmt.Printf("%v ", vertex.key)
-		}
-		fmt.Println()
-	}
-	fmt.Println("#####################")
-}
-
 func (g *Graph) getVertex(key string) *Vertex {
 	for _, vertex := range g.vertices {
 		if vertex.key == key {
