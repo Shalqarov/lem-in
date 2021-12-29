@@ -15,6 +15,11 @@ func SetGraphs(rooms *structs.RoomsAndAnts) (*Graph, *Graph) {
 	mainGraph.AppendVertex(rooms.EndRoom)
 	copiedGraph.AppendVertex(rooms.EndRoom)
 
+	mainGraph.SetStart(rooms.StartRoom)
+	mainGraph.SetEnd(rooms.EndRoom)
+	copiedGraph.SetStart(rooms.StartRoom)
+	copiedGraph.SetEnd(rooms.EndRoom)
+
 	for _, v := range rooms.Rooms {
 		mainGraph.AppendVertex(v)
 		copiedGraph.AppendVertex(v)
@@ -22,8 +27,8 @@ func SetGraphs(rooms *structs.RoomsAndAnts) (*Graph, *Graph) {
 
 	for _, v := range rooms.Edges {
 		temp := strings.Split(v, "-")
-		mainGraph.AddEdge(mainGraph.getVertex(temp[0]), mainGraph.getVertex(temp[1]))
-		copiedGraph.AddEdge(copiedGraph.getVertex(temp[0]), copiedGraph.getVertex(temp[1]))
+		mainGraph.AddEdge(mainGraph.GetVertex(temp[0]), mainGraph.GetVertex(temp[1]))
+		copiedGraph.AddEdge(copiedGraph.GetVertex(temp[0]), copiedGraph.GetVertex(temp[1]))
 	}
 
 	return mainGraph, copiedGraph

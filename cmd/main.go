@@ -10,7 +10,6 @@ import (
 )
 
 func main() {
-
 	args := os.Args[1:]
 	rooms, err := structs.FileRead(args[0])
 	if err != nil {
@@ -18,20 +17,11 @@ func main() {
 		return
 	}
 	mainGraph, copiedGraph := algorithms.SetGraphs(rooms)
-
-	foundPaths, err := mainGraph.FindAvailablePaths(copiedGraph, rooms.StartRoom, rooms.EndRoom, rooms.Ants)
+	foundPaths, err := mainGraph.FindAvailablePaths(copiedGraph, rooms.Ants)
 	if err != nil {
 		fmt.Printf("ERROR:%s\n", err)
 		return
 	}
-	if len(foundPaths) == 0 {
-		fmt.Println("Paths not found")
-		return
-	}
-	for _, v := range foundPaths {
-		algorithms.PrintPath(v)
-	}
-
 	antsOnEachPath := make([]int, len(foundPaths))
 	L := make([][]string, len(foundPaths))
 	antsOnEachPath[0]++

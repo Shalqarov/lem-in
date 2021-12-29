@@ -4,6 +4,8 @@ import "fmt"
 
 type Graph struct {
 	vertices []*Vertex
+	Start    *Vertex
+	End      *Vertex
 }
 
 type Vertex struct {
@@ -13,8 +15,11 @@ type Vertex struct {
 	previous  *Vertex
 }
 
-func (v *Vertex) GetAdjacents() []*Vertex {
-	return v.adjacents
+func (g *Graph) SetStart(key string) {
+	g.Start = g.GetVertex(key)
+}
+func (g *Graph) SetEnd(key string) {
+	g.End = g.GetVertex(key)
 }
 
 func (v *Vertex) GetKey() string {
@@ -56,7 +61,7 @@ func (g *Graph) deleteEdge(from, to *Vertex) {
 	}
 }
 
-func (g *Graph) getVertex(key string) *Vertex {
+func (g *Graph) GetVertex(key string) *Vertex {
 	for _, vertex := range g.vertices {
 		if vertex.key == key {
 			return vertex

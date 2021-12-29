@@ -5,43 +5,47 @@ import (
 	"strings"
 )
 
-func (g *Graph) FindAvailablePaths(copiedGraph *Graph, from, to string, ants int) ([][]*Vertex, error) {
+func (g *Graph) FindAvailablePaths(copiedGraph *Graph, ants int) ([][]*Vertex, error) {
 	if ants <= 2 {
-		path, err := g.oneWaySearch(from, to)
+		path, err := g.oneWaySearch()
 		if err != nil {
 			return nil, fmt.Errorf(err.Error())
 		}
 		return path, nil
 	}
-	crossings := []string{}
-	for i := 0; ; i++ {
-		crossedVertices, pathFound := copiedGraph.FindingCrossings(copiedGraph.getVertex(from), copiedGraph.getVertex(to))
-		if !pathFound {
-			if i == 0 {
-				return nil, fmt.Errorf("no available paths")
-			}
-			break
-		}
-		crossings = append(crossings, crossedVertices...)
+	crossings, err := copiedGraph.findingCrossings()
+	if err != nil {
+		return nil, fmt.Errorf(err.Error())
 	}
+	g.deleteCrossings(crossings)
 
-	for _, v := range crossings {
-		temp := strings.Split(v, " ")
-		g.deleteEdge(g.getVertex(temp[0]), g.getVertex(temp[1]))
+	foundPaths := g.pathsSearch()
+	return foundPaths, nil
+}
+
+func (g *Graph) oneWaySearch() ([][]*Vertex, error) {
+	path, _ := g.BFS(g.Start, g.End)
+	if path == nil {
+		return nil, fmt.Errorf("no available paths")
 	}
+	res := [][]*Vertex{path}
+	return res, nil
+}
 
+func (g *Graph) pathsSearch() [][]*Vertex {
 	foundPaths := [][]*Vertex{}
 	visitedVertices := []map[*Vertex]bool{}
 	for {
 		haveCrossings := false
-		path, mapPath := g.BFS(g.getVertex(from), g.getVertex(to))
+		path, mapPath := g.BFS(g.Start, g.End)
 		if path == nil {
 			break
 		}
+		// if path has only start - end
 		if len(path) == 2 {
 			// returning path without start vertex
 			foundPaths = append(foundPaths, path[1:])
-			return foundPaths, nil
+			return foundPaths
 		}
 		if len(visitedVertices) == 0 {
 			visitedVertices = append(visitedVertices, mapPath)
@@ -50,23 +54,39 @@ func (g *Graph) FindAvailablePaths(copiedGraph *Graph, from, to string, ants int
 		}
 		if haveVerticesCrossings(visitedVertices, mapPath) {
 			haveCrossings = true
-			continue
 		}
 		if !haveCrossings {
 			visitedVertices = append(visitedVertices, mapPath)
 			foundPaths = append(foundPaths, path[1:])
 		}
 	}
-	return foundPaths, nil
+	return foundPaths
 }
 
-func (g *Graph) oneWaySearch(from, to string) ([][]*Vertex, error) {
-	path, _ := g.BFS(g.getVertex(from), g.getVertex(to))
-	if path == nil {
+func (g *Graph) findingCrossings() ([]string, error) {
+	crossedVertices, pathFound := g.BhandariCrossings(g.GetVertex(g.Start.key), g.GetVertex(g.End.key))
+	if !pathFound {
 		return nil, fmt.Errorf("no available paths")
 	}
-	res := [][]*Vertex{path}
-	return res, nil
+	crossings := crossedVertices
+	for i := 0; ; i++ {
+		crossedVertices, pathFound := g.BhandariCrossings(g.GetVertex(g.Start.key), g.GetVertex(g.End.key))
+		if !pathFound {
+			if i == 0 {
+				return nil, fmt.Errorf("no available paths")
+			}
+			break
+		}
+		crossings = append(crossings, crossedVertices...)
+	}
+	return crossings, nil
+}
+
+func (g *Graph) deleteCrossings(crossings []string) {
+	for _, v := range crossings {
+		temp := strings.Split(v, " ")
+		g.deleteEdge(g.GetVertex(temp[0]), g.GetVertex(temp[1]))
+	}
 }
 
 func haveVerticesCrossings(visitedVertices []map[*Vertex]bool, path map[*Vertex]bool) bool {
