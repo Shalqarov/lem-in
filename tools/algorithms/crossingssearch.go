@@ -1,6 +1,5 @@
 package algorithms
 
-// bfs
 func (g *Graph) FindingCrossings(from, to *Vertex) ([]string, bool) {
 	visited := map[*Vertex]bool{from: true}
 	queue := []*Vertex{from}

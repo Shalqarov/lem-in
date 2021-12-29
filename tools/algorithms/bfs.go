@@ -1,33 +1,35 @@
 package algorithms
 
 import (
+	"fmt"
 	"strings"
 )
 
-func (g *Graph) FindAvailablePaths(copiedGraph *Graph, from, to string, ants int) [][]*Vertex {
-	crossings := []string{}
-
+func (g *Graph) FindAvailablePaths(copiedGraph *Graph, from, to string, ants int) ([][]*Vertex, error) {
 	if ants <= 2 {
-		temp, _ := g.BFS(g.getVertex(from), g.getVertex(to))
-		res := [][]*Vertex{temp}
-		return res
+		path, err := g.oneWaySearch(from, to)
+		if err != nil {
+			return nil, fmt.Errorf(err.Error())
+		}
+		return path, nil
 	}
-
-	for {
+	crossings := []string{}
+	for i := 0; ; i++ {
 		crossedVertices, pathFound := copiedGraph.FindingCrossings(copiedGraph.getVertex(from), copiedGraph.getVertex(to))
 		if !pathFound {
+			if i == 0 {
+				return nil, fmt.Errorf("no available paths")
+			}
 			break
 		}
 		crossings = append(crossings, crossedVertices...)
 	}
 
-	//deleting crossings
 	for _, v := range crossings {
 		temp := strings.Split(v, " ")
 		g.deleteEdge(g.getVertex(temp[0]), g.getVertex(temp[1]))
 	}
 
-	//BFS
 	foundPaths := [][]*Vertex{}
 	visitedVertices := []map[*Vertex]bool{}
 	for {
@@ -39,7 +41,7 @@ func (g *Graph) FindAvailablePaths(copiedGraph *Graph, from, to string, ants int
 		if len(path) == 2 {
 			// returning path without start vertex
 			foundPaths = append(foundPaths, path[1:])
-			return foundPaths
+			return foundPaths, nil
 		}
 		if len(visitedVertices) == 0 {
 			visitedVertices = append(visitedVertices, mapPath)
@@ -55,25 +57,34 @@ func (g *Graph) FindAvailablePaths(copiedGraph *Graph, from, to string, ants int
 			foundPaths = append(foundPaths, path[1:])
 		}
 	}
-	return foundPaths
+	return foundPaths, nil
+}
+
+func (g *Graph) oneWaySearch(from, to string) ([][]*Vertex, error) {
+	path, _ := g.BFS(g.getVertex(from), g.getVertex(to))
+	if path == nil {
+		return nil, fmt.Errorf("no available paths")
+	}
+	res := [][]*Vertex{path}
+	return res, nil
 }
 
 func haveVerticesCrossings(visitedVertices []map[*Vertex]bool, path map[*Vertex]bool) bool {
 	for _, v := range visitedVertices {
-		if !crossingsChecking(v, path) {
+		if crossed(v, path) {
 			return true
 		}
 	}
 	return false
 }
 
-func crossingsChecking(path, currentpath map[*Vertex]bool) bool {
+func crossed(path, currentpath map[*Vertex]bool) bool {
 	for vertex := range currentpath {
 		if _, have := path[vertex]; have {
-			return false
+			return true
 		}
 	}
-	return true
+	return false
 }
 
 func (g *Graph) getpath(finish *Vertex) ([]*Vertex, map[*Vertex]bool) {

@@ -3,7 +3,6 @@ package structs
 import (
 	"bufio"
 	"fmt"
-	"log"
 	"os"
 	"strconv"
 	"strings"
@@ -22,7 +21,7 @@ func FileRead(filepath string) (*RoomsAndAnts, error) {
 	roomsAndAnts := &RoomsAndAnts{}
 	file, err := os.Open("examples/" + filepath)
 	if err != nil {
-		log.Fatalln(err)
+		return nil, fmt.Errorf(err.Error())
 	}
 	defer file.Close()
 	for scanner, step := bufio.NewScanner(file), 0; scanner.Scan(); {
