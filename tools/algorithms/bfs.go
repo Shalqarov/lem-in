@@ -66,15 +66,12 @@ func (g *Graph) pathsSearch() [][]*Vertex {
 func (g *Graph) findingCrossings() ([]string, error) {
 	crossedVertices, pathFound := g.BhandariCrossings(g.GetVertex(g.Start.key), g.GetVertex(g.End.key))
 	if !pathFound {
-		return nil, fmt.Errorf("no available paths")
+		return nil, fmt.Errorf("findingCRossings(): no available paths")
 	}
 	crossings := crossedVertices
-	for i := 0; ; i++ {
+	for {
 		crossedVertices, pathFound := g.BhandariCrossings(g.GetVertex(g.Start.key), g.GetVertex(g.End.key))
 		if !pathFound {
-			if i == 0 {
-				return nil, fmt.Errorf("no available paths")
-			}
 			break
 		}
 		crossings = append(crossings, crossedVertices...)
