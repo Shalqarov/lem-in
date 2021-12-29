@@ -3,7 +3,6 @@ package main
 import (
 	"fmt"
 	"os"
-	"strconv"
 
 	"git.01.alem.school/MangoMango/lem-in/tools/algorithms"
 	"git.01.alem.school/MangoMango/lem-in/tools/structs"
@@ -22,82 +21,10 @@ func main() {
 		fmt.Printf("ERROR:%s\n", err)
 		return
 	}
-	antsOnEachPath := make([]int, len(foundPaths))
-	L := make([][]string, len(foundPaths))
-	antsOnEachPath[0]++
-	antCounter := 1
-	L[0] = append(L[0], "L"+strconv.Itoa(antCounter))
-	antCounter++
-	rooms.Ants--
-	if len(foundPaths) > 1 {
-		for i := 0; rooms.Ants > 0; {
-			if i+1 >= len(foundPaths) {
-				i = 0
-			}
-			a := fmt.Sprintf("L%v", antCounter)
-			if len(foundPaths[i])+antsOnEachPath[i] == len(foundPaths[i+1])+antsOnEachPath[i+1] {
-				antsOnEachPath[i]++
-				L[i] = append(L[i], a)
-				antCounter++
-				rooms.Ants--
-				continue
-			} else if len(foundPaths[i])+antsOnEachPath[i] < len(foundPaths[i+1])+antsOnEachPath[i+1] {
-				antsOnEachPath[i]++
-				L[i] = append(L[i], a)
-				antCounter++
-				rooms.Ants--
-				i = 0
-				continue
-			}
-			antsOnEachPath[i+1]++
-			L[i+1] = append(L[i+1], a)
-			antCounter++
-			rooms.Ants--
-			i++
-		}
-	} else {
-		antsOnEachPath[0] += rooms.Ants
-		for i := 1; i < antsOnEachPath[0]; i++ {
-			L[0] = append(L[0], "L"+strconv.Itoa(antCounter))
-			antCounter++
-		}
-	}
-	maxLen := len(L[0])
-	for _, v := range L {
-		if len(v) > maxLen {
-			maxLen = len(v)
-		}
-	}
+	antsOnEachPath := algorithms.AntsOnEachPathCount(foundPaths, rooms.Ants)
 
-	res := make([][]string, 1)
+	algorithms.PrintAnts(antsOnEachPath, foundPaths)
 
-	element := 0
-	stack := 0
-	for idx := 0; idx < len(L); idx++ {
-		for resIndex, vertex := range foundPaths[idx] {
-			if element >= len(L[idx]) {
-				break
-			}
-			if resIndex+stack >= len(res) {
-				res = append(res, []string{})
-			}
-			res[resIndex+stack] = append(res[resIndex+stack], L[idx][element]+"-"+vertex.GetKey())
-		}
-		if idx+1 >= len(L) {
-			idx = -1
-			element++
-			stack++
-		}
-		if element >= maxLen {
-			break
-		}
-	}
-	for _, stack := range res {
-		for _, ant := range stack {
-			fmt.Printf("%s ", ant)
-		}
-		fmt.Println()
-	}
 }
 
 /*
