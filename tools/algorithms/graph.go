@@ -3,7 +3,7 @@ package algorithms
 import "fmt"
 
 type Graph struct {
-	vertices []*Vertex
+	vertices map[string]*Vertex
 	Start    *Vertex
 	End      *Vertex
 }
@@ -27,14 +27,18 @@ func (v *Vertex) GetKey() string {
 }
 
 func GraphInit() *Graph {
-	return &Graph{}
-}
-
-func (g *Graph) AppendVertex(key string) {
-	if g.containsVertex(key) {
-		fmt.Printf("Oh snap: '%s' is already exists", key)
+	temp := &Graph{
+		vertices: make(map[string]*Vertex),
 	}
-	g.vertices = append(g.vertices, &Vertex{key: key})
+	return temp
+}
+func (g *Graph) AppendVertex(key string) error {
+	temp := &Vertex{key: key}
+	if _, isHave := g.vertices[key]; isHave {
+		return fmt.Errorf("already has vertex")
+	}
+	g.vertices[key] = temp
+	return nil
 }
 
 func (g *Graph) AddEdge(from, to *Vertex) {
@@ -62,21 +66,7 @@ func (g *Graph) deleteEdge(from, to *Vertex) {
 }
 
 func (g *Graph) GetVertex(key string) *Vertex {
-	for _, vertex := range g.vertices {
-		if vertex.key == key {
-			return vertex
-		}
-	}
-	return nil
-}
-
-func (g *Graph) containsVertex(key string) bool {
-	for _, vertex := range g.vertices {
-		if vertex.key == key {
-			return true
-		}
-	}
-	return false
+	return g.vertices[key]
 }
 
 func PrintPath(path []*Vertex) {

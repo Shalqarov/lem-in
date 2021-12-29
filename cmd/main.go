@@ -22,17 +22,5 @@ func main() {
 		return
 	}
 	antsOnEachPath := algorithms.AntsOnEachPathCount(foundPaths, rooms.Ants)
-
 	algorithms.PrintAnts(antsOnEachPath, foundPaths)
-
 }
-
-/*
-L1-gilfoyle L2-dinish
-L1-peter L2-jimYoung L3-gilfoyle L4-dinish
-L2-peter L3-peter L4-jimYoung L5-gilfoyle L6-dinish
-L4-peter L5-peter L6-jimYoung L7-gilfoyle L8-dinish
-L6-peter L7-peter L8-jimYoung L9-gilfoyle
-L8-peter L9-peter L10-gilfoyle
-L10-peter
-*/
