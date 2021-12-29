@@ -13,7 +13,7 @@ func (g *Graph) BhandariCrossings(from, to *Vertex) ([]string, bool) {
 			visited[v] = true
 			v.previous = current
 			if v == to {
-				cross := g.reversepath(v)
+				cross := g.reversePathWithCrossings(v)
 				return cross, true
 			}
 			queue = append(queue, v)
@@ -24,7 +24,7 @@ func (g *Graph) BhandariCrossings(from, to *Vertex) ([]string, bool) {
 	return nil, false
 }
 
-func (g *Graph) reversepath(finish *Vertex) []string {
+func (g *Graph) reversePathWithCrossings(finish *Vertex) []string {
 	crossings := []string{}
 	for node := finish; node != nil; node = node.previous {
 		if node.previous != nil {

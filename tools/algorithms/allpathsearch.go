@@ -66,7 +66,7 @@ func (g *Graph) pathsSearch() [][]*Vertex {
 func (g *Graph) findingCrossings() ([]string, error) {
 	crossedVertices, pathFound := g.BhandariCrossings(g.GetVertex(g.Start.key), g.GetVertex(g.End.key))
 	if !pathFound {
-		return nil, fmt.Errorf("findingCRossings(): no available paths")
+		return nil, fmt.Errorf("invalid data format")
 	}
 	crossings := crossedVertices
 	for {
@@ -104,7 +104,7 @@ func crossed(path, currentpath map[*Vertex]bool) bool {
 	return false
 }
 
-func (g *Graph) getpath(finish *Vertex) ([]*Vertex, map[*Vertex]bool) {
+func (g *Graph) reversePath(finish *Vertex) ([]*Vertex, map[*Vertex]bool) {
 	reversed := []*Vertex{}
 	for node := finish; node != nil; node = node.previous {
 		node.reversed = true
@@ -139,7 +139,7 @@ func (g *Graph) BFS(from, to *Vertex) ([]*Vertex, map[*Vertex]bool) {
 			visited[v] = true
 			v.previous = current
 			if v == to {
-				return g.getpath(v)
+				return g.reversePath(v)
 			}
 			queue = append(queue, v)
 		}

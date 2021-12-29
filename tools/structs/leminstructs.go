@@ -27,12 +27,11 @@ func FileRead(filepath string) (*RoomsAndAnts, error) {
 	for scanner, step := bufio.NewScanner(file), 0; scanner.Scan(); {
 		if step == 0 {
 			step++
-			if ants, err := strconv.Atoi(scanner.Text()); err == nil {
-				roomsAndAnts.Ants = ants
-				continue
-			} else if ants <= 0 || err != nil {
-				return nil, fmt.Errorf("invalid number of ants")
+			ants, err := strconv.Atoi(scanner.Text())
+			if ants <= 0 || err != nil {
+				return nil, fmt.Errorf("invalid data format")
 			}
+			roomsAndAnts.Ants = ants
 		}
 		if scanner.Text() == "" {
 			continue
