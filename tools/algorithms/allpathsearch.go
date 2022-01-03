@@ -36,7 +36,6 @@ func (g *Graph) pathsSearch() [][]*Vertex {
 	foundPaths := [][]*Vertex{}
 	visitedVertices := []map[*Vertex]bool{}
 	for {
-		haveCrossings := false
 		path, mapPath := g.BFS(g.Start, g.End)
 		if path == nil {
 			break
@@ -53,24 +52,22 @@ func (g *Graph) pathsSearch() [][]*Vertex {
 			continue
 		}
 		if haveVerticesCrossings(visitedVertices, mapPath) {
-			haveCrossings = true
+			continue
 		}
-		if !haveCrossings {
-			visitedVertices = append(visitedVertices, mapPath)
-			foundPaths = append(foundPaths, path[1:])
-		}
+		visitedVertices = append(visitedVertices, mapPath)
+		foundPaths = append(foundPaths, path[1:])
 	}
 	return foundPaths
 }
 
 func (g *Graph) findingCrossings() ([]string, error) {
-	crossedVertices, pathFound := g.BhandariCrossings(g.GetVertex(g.Start.key), g.GetVertex(g.End.key))
+	_, pathFound := g.BhandariCrossings(g.Start, g.End)
 	if !pathFound {
 		return nil, fmt.Errorf("invalid data format")
 	}
-	crossings := crossedVertices
+	crossings := []string{}
 	for {
-		crossedVertices, pathFound := g.BhandariCrossings(g.GetVertex(g.Start.key), g.GetVertex(g.End.key))
+		crossedVertices, pathFound := g.BhandariCrossings(g.Start, g.End)
 		if !pathFound {
 			break
 		}
@@ -114,7 +111,7 @@ func (g *Graph) reversePath(finish *Vertex) ([]*Vertex, map[*Vertex]bool) {
 	mapResult := make(map[*Vertex]bool)
 	for i, j := len(reversed)-1, 0; i >= 0; i, j = i-1, j+1 {
 		res[j] = reversed[i]
-		if j == 0 || i+1 >= 0 {
+		if j == 0 || j+1 >= len(reversed) {
 			continue
 		}
 		mapResult[res[j]] = true

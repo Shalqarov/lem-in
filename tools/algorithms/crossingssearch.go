@@ -18,7 +18,6 @@ func (g *Graph) BhandariCrossings(from, to *Vertex) ([]string, bool) {
 			}
 			queue = append(queue, v)
 		}
-
 		queue = queue[1:]
 	}
 	return nil, false
@@ -26,18 +25,17 @@ func (g *Graph) BhandariCrossings(from, to *Vertex) ([]string, bool) {
 
 func (g *Graph) reversePathWithCrossings(finish *Vertex) []string {
 	crossings := []string{}
-	for node := finish; node != nil; node = node.previous {
-		if node.previous != nil {
-			if node.reversed && node.previous.reversed {
-				temp := node.previous.key + " " + node.key
-				crossings = append(crossings, temp)
+	for vertex := finish; vertex != nil; vertex = vertex.previous {
+		if vertex.previous != nil {
+			if vertex.reversed && vertex.previous.reversed {
+				crossings = append(crossings, vertex.previous.key+" "+vertex.key)
 			}
 		}
-		if node != nil && node.previous != nil {
-			g.deleteEdge(node, node.previous)
-			g.AddOneDirectedEdge(node, node.previous)
+		if vertex != nil && vertex.previous != nil {
+			g.deleteEdge(vertex, vertex.previous)
+			g.AddOneDirectedEdge(vertex, vertex.previous)
 		}
-		node.reversed = true
+		vertex.reversed = true
 	}
 	return crossings
 }

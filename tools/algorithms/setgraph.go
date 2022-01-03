@@ -11,12 +11,14 @@ func SetGraphs(rooms *structs.RoomsAndAnts) (*Graph, *Graph) {
 	copiedGraph := GraphInit()
 
 	mainGraph.AppendVertex(rooms.StartRoom)
-	copiedGraph.AppendVertex(rooms.StartRoom)
 	mainGraph.AppendVertex(rooms.EndRoom)
+
+	copiedGraph.AppendVertex(rooms.StartRoom)
 	copiedGraph.AppendVertex(rooms.EndRoom)
 
 	mainGraph.SetStart(rooms.StartRoom)
 	mainGraph.SetEnd(rooms.EndRoom)
+
 	copiedGraph.SetStart(rooms.StartRoom)
 	copiedGraph.SetEnd(rooms.EndRoom)
 

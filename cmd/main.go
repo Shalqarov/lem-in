@@ -21,6 +21,7 @@ func main() {
 		return
 	}
 	mainGraph, copiedGraph := algorithms.SetGraphs(rooms)
+
 	foundPaths, err := mainGraph.FindAvailablePaths(copiedGraph, rooms.Ants)
 	if err != nil {
 		fmt.Printf("ERROR: %s\n", err)
