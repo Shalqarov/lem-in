@@ -7,10 +7,10 @@ import (
 
 func AntsOnEachPathCount(foundPaths [][]*Vertex, ants int) [][]string {
 	antsOnPath := make([]int, len(foundPaths))
-	L := make([][]string, len(foundPaths))
+	result := make([][]string, len(foundPaths))
 	antsOnPath[0]++
 	antCounter := 1
-	L[0] = append(L[0], "L"+strconv.Itoa(antCounter))
+	result[0] = append(result[0], "L"+strconv.Itoa(antCounter))
 	antCounter++
 	ants--
 	if len(foundPaths) > 1 {
@@ -21,20 +21,20 @@ func AntsOnEachPathCount(foundPaths [][]*Vertex, ants int) [][]string {
 			antID := fmt.Sprintf("L%v", antCounter)
 			if len(foundPaths[i])+antsOnPath[i] == len(foundPaths[i+1])+antsOnPath[i+1] {
 				antsOnPath[i]++
-				L[i] = append(L[i], antID)
+				result[i] = append(result[i], antID)
 				antCounter++
 				ants--
 				continue
 			} else if len(foundPaths[i])+antsOnPath[i] < len(foundPaths[i+1])+antsOnPath[i+1] {
 				antsOnPath[i]++
-				L[i] = append(L[i], antID)
+				result[i] = append(result[i], antID)
 				antCounter++
 				ants--
 				i = 0
 				continue
 			}
 			antsOnPath[i+1]++
-			L[i+1] = append(L[i+1], antID)
+			result[i+1] = append(result[i+1], antID)
 			antCounter++
 			ants--
 			i++
@@ -42,11 +42,11 @@ func AntsOnEachPathCount(foundPaths [][]*Vertex, ants int) [][]string {
 	} else {
 		antsOnPath[0] += ants
 		for i := 1; i < antsOnPath[0]; i++ {
-			L[0] = append(L[0], "L"+strconv.Itoa(antCounter))
+			result[0] = append(result[0], "L"+strconv.Itoa(antCounter))
 			antCounter++
 		}
 	}
-	return L
+	return result
 }
 
 func PrintAnts(antsOnPath [][]string, foundPaths [][]*Vertex) {

@@ -111,11 +111,10 @@ func (g *Graph) reversePath(finish *Vertex) ([]*Vertex, map[*Vertex]bool) {
 	mapResult := make(map[*Vertex]bool)
 	for i, j := len(reversed)-1, 0; i >= 0; i, j = i-1, j+1 {
 		res[j] = reversed[i]
-		if j == 0 || j+1 >= len(reversed) {
-			continue
-		}
 		mapResult[res[j]] = true
 	}
+	delete(mapResult, res[0])
+	delete(mapResult, res[len(res)-1])
 	for i := 1; i < len(res); i++ {
 		g.deleteEdge(res[i], res[i].previous)
 		g.AddOneDirectedEdge(res[i], res[i].previous)
