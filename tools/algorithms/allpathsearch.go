@@ -28,7 +28,8 @@ func (g *Graph) oneWaySearch() ([][]*Vertex, error) {
 	if path == nil {
 		return nil, fmt.Errorf("no available paths")
 	}
-	res := [][]*Vertex{path}
+	//without start
+	res := [][]*Vertex{path[1:]}
 	return res, nil
 }
 

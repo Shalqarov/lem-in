@@ -53,7 +53,7 @@ func PrintAnts(antsOnPath [][]string, foundPaths [][]*Vertex) {
 	if len(foundPaths[0]) == 1 {
 		count := len(antsOnPath[0])
 		for i := 1; count > 0; i++ {
-			fmt.Printf("L%d ", i)
+			fmt.Printf("L%d-%s ", i, foundPaths[0][0].key)
 			count--
 		}
 		fmt.Println()

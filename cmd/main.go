@@ -21,6 +21,10 @@ func main() {
 		return
 	}
 	mainGraph, cloneGraph := algorithms.SetGraphs(rooms)
+	if mainGraph == nil {
+		fmt.Println("ERROR: invalid data format")
+		return
+	}
 
 	foundPaths, err := mainGraph.FindAvailablePaths(cloneGraph, rooms.Ants)
 	if err != nil {

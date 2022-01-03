@@ -58,5 +58,8 @@ func FileRead(filepath string) (*RoomsAndAnts, error) {
 		temp := strings.Split(scanner.Text(), " ")
 		roomsAndAnts.Rooms = append(roomsAndAnts.Rooms, temp[0])
 	}
+	if roomsAndAnts.StartRoom == "" || roomsAndAnts.EndRoom == "" {
+		return nil, fmt.Errorf("invalid data format")
+	}
 	return roomsAndAnts, nil
 }

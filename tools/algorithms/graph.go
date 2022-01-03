@@ -66,5 +66,8 @@ func (g *Graph) deleteEdge(from, to *Vertex) {
 }
 
 func (g *Graph) GetVertex(key string) *Vertex {
-	return g.vertices[key]
+	if _, have := g.vertices[key]; have {
+		return g.vertices[key]
+	}
+	return nil
 }

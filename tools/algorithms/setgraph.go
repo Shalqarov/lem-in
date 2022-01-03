@@ -32,7 +32,12 @@ func SetGraphs(rooms *structs.RoomsAndAnts) (*Graph, *Graph) {
 
 	for _, v := range rooms.Edges {
 		temp := strings.Split(v, "-")
-		mainGraph.AddEdge(mainGraph.GetVertex(temp[0]), mainGraph.GetVertex(temp[1]))
+		from := mainGraph.GetVertex(temp[0])
+		to := mainGraph.GetVertex(temp[1])
+		if from == nil || to == nil {
+			return nil, nil
+		}
+		mainGraph.AddEdge(from, to)
 		copiedGraph.AddEdge(copiedGraph.GetVertex(temp[0]), copiedGraph.GetVertex(temp[1]))
 	}
 
