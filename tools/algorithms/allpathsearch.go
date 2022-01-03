@@ -5,7 +5,7 @@ import (
 	"strings"
 )
 
-func (g *Graph) FindAvailablePaths(copiedGraph *Graph, ants int) ([][]*Vertex, error) {
+func (g *Graph) FindAvailablePaths(cloneGraph *Graph, ants int) ([][]*Vertex, error) {
 	if ants <= 2 {
 		path, err := g.oneWaySearch()
 		if err != nil {
@@ -13,7 +13,7 @@ func (g *Graph) FindAvailablePaths(copiedGraph *Graph, ants int) ([][]*Vertex, e
 		}
 		return path, nil
 	}
-	crossings, err := copiedGraph.findingCrossings()
+	crossings, err := cloneGraph.findingCrossings()
 	if err != nil {
 		return nil, fmt.Errorf(err.Error())
 	}
@@ -101,27 +101,6 @@ func crossed(path, currentpath map[*Vertex]bool) bool {
 	return false
 }
 
-func (g *Graph) reversePath(finish *Vertex) ([]*Vertex, map[*Vertex]bool) {
-	reversed := []*Vertex{}
-	for node := finish; node != nil; node = node.previous {
-		node.reversed = true
-		reversed = append(reversed, node)
-	}
-	res := make([]*Vertex, len(reversed))
-	mapResult := make(map[*Vertex]bool)
-	for i, j := len(reversed)-1, 0; i >= 0; i, j = i-1, j+1 {
-		res[j] = reversed[i]
-		mapResult[res[j]] = true
-	}
-	delete(mapResult, res[0])
-	delete(mapResult, res[len(res)-1])
-	for i := 1; i < len(res); i++ {
-		g.deleteEdge(res[i], res[i].previous)
-		g.AddOneDirectedEdge(res[i], res[i].previous)
-	}
-	return res, mapResult
-}
-
 func (g *Graph) BFS(from, to *Vertex) ([]*Vertex, map[*Vertex]bool) {
 	visited := map[*Vertex]bool{from: true}
 	queue := []*Vertex{from}
@@ -142,4 +121,25 @@ func (g *Graph) BFS(from, to *Vertex) ([]*Vertex, map[*Vertex]bool) {
 		queue = queue[1:]
 	}
 	return nil, nil
+}
+
+func (g *Graph) reversePath(finish *Vertex) ([]*Vertex, map[*Vertex]bool) {
+	reversed := []*Vertex{}
+	for node := finish; node != nil; node = node.previous {
+		node.reversed = true
+		reversed = append(reversed, node)
+	}
+	res := make([]*Vertex, len(reversed))
+	mapResult := make(map[*Vertex]bool)
+	for i, j := len(reversed)-1, 0; i >= 0; i, j = i-1, j+1 {
+		res[j] = reversed[i]
+		mapResult[res[j]] = true
+	}
+	delete(mapResult, res[0])
+	delete(mapResult, res[len(res)-1])
+	for i := 1; i < len(res); i++ {
+		g.deleteEdge(res[i], res[i].previous)
+		g.AddOneDirectedEdge(res[i], res[i].previous)
+	}
+	return res, mapResult
 }

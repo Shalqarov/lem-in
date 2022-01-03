@@ -68,14 +68,3 @@ func (g *Graph) deleteEdge(from, to *Vertex) {
 func (g *Graph) GetVertex(key string) *Vertex {
 	return g.vertices[key]
 }
-
-func PrintPath(path []*Vertex) {
-	if len(path) == 0 {
-		return
-	}
-	fmt.Print(path[0].key)
-	for i := 1; i < len(path); i++ {
-		fmt.Printf(" --> %s", path[i].key)
-	}
-	fmt.Println()
-}

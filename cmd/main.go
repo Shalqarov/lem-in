@@ -20,9 +20,9 @@ func main() {
 		fmt.Printf("ERROR: %s\n", err)
 		return
 	}
-	mainGraph, copiedGraph := algorithms.SetGraphs(rooms)
+	mainGraph, cloneGraph := algorithms.SetGraphs(rooms)
 
-	foundPaths, err := mainGraph.FindAvailablePaths(copiedGraph, rooms.Ants)
+	foundPaths, err := mainGraph.FindAvailablePaths(cloneGraph, rooms.Ants)
 	if err != nil {
 		fmt.Printf("ERROR: %s\n", err)
 		return
