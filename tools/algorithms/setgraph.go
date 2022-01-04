@@ -25,7 +25,7 @@ func SetGraphs(rooms *structs.RoomsAndAnts) (*Graph, *Graph) {
 	for _, v := range rooms.Rooms {
 		err := mainGraph.AppendVertex(v)
 		if err != nil {
-			continue
+			return nil, nil
 		}
 		copiedGraph.AppendVertex(v)
 	}
