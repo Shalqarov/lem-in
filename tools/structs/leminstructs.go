@@ -32,6 +32,7 @@ func FileRead(filepath string) (*RoomsAndAnts, error) {
 				return nil, fmt.Errorf("invalid data format")
 			}
 			roomsAndAnts.Ants = ants
+			continue
 		}
 		if scanner.Text() == "" {
 			continue
@@ -39,12 +40,18 @@ func FileRead(filepath string) (*RoomsAndAnts, error) {
 		if scanner.Text() == "##start" {
 			scanner.Scan()
 			temp := strings.Split(scanner.Text(), " ")
+			if len(temp) != 3 {
+				return nil, fmt.Errorf("invalid data format")
+			}
 			roomsAndAnts.StartRoom = temp[0]
 			continue
 		}
 		if scanner.Text() == "##end" {
 			scanner.Scan()
 			temp := strings.Split(scanner.Text(), " ")
+			if len(temp) != 3 {
+				return nil, fmt.Errorf("invalid data format")
+			}
 			roomsAndAnts.EndRoom = temp[0]
 			continue
 		}
@@ -56,6 +63,9 @@ func FileRead(filepath string) (*RoomsAndAnts, error) {
 			continue
 		}
 		temp := strings.Split(scanner.Text(), " ")
+		if len(temp) != 3 {
+			return nil, fmt.Errorf("invalid data format")
+		}
 		roomsAndAnts.Rooms = append(roomsAndAnts.Rooms, temp[0])
 	}
 	if roomsAndAnts.StartRoom == "" || roomsAndAnts.EndRoom == "" {
